@@ -18,8 +18,6 @@ Usage Example::
     helper.click_element(By.ID, "button_id")
 """
 
-from typing import Union
-
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
@@ -46,23 +44,6 @@ class SeleniumHelper:
         """
         self.driver = driver
 
-    def wait_for_element_presence(
-            self, by: By, locator: str, timeout: int = DEFAULT_TIMEOUT
-    ) -> Union[webdriver.remote.webelement.WebElement, None]:
-        """
-        Wait for an element to be present on the web page.
-
-        Args:
-            by (By): The locator strategy (e.g., By.ID, By.XPATH, By.NAME, etc.) for the element.
-            locator (str): The value of the locator for the element.
-            timeout (int): Maximum time to wait for the element in seconds. Defaults to 10 seconds.
-
-        Returns:
-            WebElement: The located element.
-        """
-        wait = WebDriverWait(self.driver, timeout)
-        return wait.until(ec.presence_of_element_located((by, locator)))
-
     def type_into_element(
             self, by: By, locator: str, text: str, timeout: int = DEFAULT_TIMEOUT
     ) -> None:
@@ -75,7 +56,8 @@ class SeleniumHelper:
             text (str): The text to be typed into the element.
             timeout (int): Maximum time to wait for the element in seconds. Defaults to 10 seconds.
         """
-        element = self.wait_for_element_presence(by, locator, timeout)
+        wait = WebDriverWait(self.driver, timeout)
+        element = wait.until(ec.visibility_of_element_located((by, locator)))
         element.send_keys(text)
 
     def click_element(
@@ -89,7 +71,8 @@ class SeleniumHelper:
             locator (str): The value of the locator for the element.
             timeout (int): Maximum time to wait for the element to be clickable in seconds. Defaults to 10 seconds.
         """
-        element = self.wait_for_element_presence(by, locator, timeout)
+        wait = WebDriverWait(self.driver, timeout)
+        element = wait.until(ec.element_to_be_clickable((by, locator)))
         element.click()
 
     def clear_element_text(
@@ -103,7 +86,8 @@ class SeleniumHelper:
             locator (str): The value of the locator for the element.
             timeout (int): Maximum time to wait for the element in seconds. Defaults to 10 seconds.
         """
-        element = self.wait_for_element_presence(by, locator, timeout)
+        wait = WebDriverWait(self.driver, timeout)
+        element = wait.until(ec.visibility_of_element_located((by, locator)))
         element.clear()
 
     def select_dropdown_option_by_value(
@@ -118,12 +102,31 @@ class SeleniumHelper:
             option_value (str): The value attribute of the option to be selected.
             timeout (int): Maximum time to wait for the element in seconds. Defaults to 10 seconds.
         """
-        element = self.wait_for_element_presence(by, locator, timeout)
+        wait = WebDriverWait(self.driver, timeout)
+        element = wait.until(ec.visibility_of_element_located((By, locator)))
         select = Select(element)
         select.select_by_value(option_value)
 
+    def switch_to_iframe(self, by: By, locator: str) -> None:
+        """
+        Switch to an iframe identified by a locator.
+
+        This function waits for the iframe to be present on the web page and then switches the driver's context to the
+        iframe.
+
+        Args:
+            by (By): The locator strategy (e.g., By.ID, By.XPATH, By.NAME, etc.) for the iframe.
+            locator (str): The value of the locator for the iframe.
+
+        Returns:
+            None
+        """
+        wait = WebDriverWait(self.driver, 30)
+        iframe = wait.until(ec.presence_of_element_located((by, locator)))
+        self.driver.switch_to.frame(iframe)
+
     def is_element_present(
-            self, by: By, locator: str, timeout: int = DEFAULT_TIMEOUT
+            self, by: By, locator: str,
     ) -> bool:
         """
         Check if an element identified by a locator is present on the web page.
@@ -131,13 +134,12 @@ class SeleniumHelper:
         Args:
             by (By): The locator strategy (e.g., By.ID, By.XPATH, By.NAME, etc.) for the element.
             locator (str): The value of the locator for the element.
-            timeout (int): Maximum time to wait for the element in seconds. Defaults to 10 seconds.
 
         Returns:
             bool: True if the element is present, False otherwise.
         """
         try:
-            self.wait_for_element_presence(by, locator, timeout)
+            self.driver.find_element(by, locator)
             return True
         except NoSuchElementException:
             return False
