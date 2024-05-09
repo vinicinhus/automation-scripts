@@ -7,40 +7,45 @@ Dependencies:
     - datetime: Provides classes for manipulating dates and times.
     - pathlib: Provides an object-oriented interface for working with file system paths.
     - typing: Provides support for type hints.
+    - time: Provides time-related functions for waiting until a file is present.
 
 Usage Example:
     from file_manager import FileManager
 
-    # Initialize FileManager with the current directory as the base path
-    file_manager = FileManager()
+    >>> # Initialize FileManager with the current directory as the base path
+    >>> file_manager = FileManager()
 
-    # Rename a file
-    file_manager.rename_file("old_file.txt", "new_file.txt")
+    >>> # Rename a file
+    >>> file_manager.rename_file("old_file.txt", "new_file.txt")
 
-    # Move a file to a different location
-    file_manager.move_file("file.txt", "destination_folder")
+    >>> # Move a file to a different location
+    >>> file_manager.move_file("file.txt", "destination_folder")
 
-    # Rename multiple files using a mapping dictionary
-    path_mapping = {"old_file1.txt": "new_file1.txt", "old_file2.txt": "new_file2.txt"}
-    file_manager.rename_files(path_mapping)
+    >>> # Rename multiple files using a mapping dictionary
+    >>> path_mapping = {"old_file1.txt": "new_file1.txt", "old_file2.txt": "new_file2.txt"}
+    >>> file_manager.rename_files(path_mapping)
 
-    # Move multiple files to different locations using a mapping dictionary
-    path_mapping = {"file1.txt": "destination_folder1", "file2.txt": "destination_folder2"}
-    file_manager.move_files(path_mapping)
+    >>> # Move multiple files to different locations using a mapping dictionary
+    >>> path_mapping = {"file1.txt": "destination_folder1", "file2.txt": "destination_folder2"}
+    >>> file_manager.move_files(path_mapping)
 
-    # Exclude (delete) a file
-    file_manager.exclude_file("file_to_delete.txt")
+    >>> # Exclude (delete) a file
+    >>> file_manager.exclude_file("file_to_delete.txt")
 
-    # Exclude (delete) all files in a folder
-    file_manager.exclude_files_in_folder("folder_to_clear")
+    >>> # Exclude (delete) all files in a folder
+    >>> file_manager.exclude_files_in_folder("folder_to_clear")
 
-    # Create a new folder if it does not already exist
-    created_folder_path = file_manager.create_folder("new_folder")
+    >>> # Create a new folder if it does not already exist
+    >>> created_folder_path = file_manager.create_folder("new_folder")
+    
+    >>> # Wait until a file with the specified extension is present in a folder
+    >>> file_manager.wait_until_file_is_present("folder_path", "file_extension", timeout=60)
 """
 
 from datetime import datetime
 from pathlib import Path
 from typing import Dict
+import time
 
 
 class FileManager:
@@ -114,7 +119,7 @@ class FileManager:
         for file_path in folder_path.iterdir():
             file_path.unlink()
 
-    def create_folder(self, folder_path: str) -> str:
+    def create_folder(self, folder_path: str) -> Path:
         """
         Create a new folder if it does not already exist.
 
@@ -124,7 +129,7 @@ class FileManager:
                          with the current date in the specified format.
                          
         Returns:
-            str: The path of the created folder.
+            Path: The path of the created folder.
         """
         if '{time:YYYY-MM-DD}' in folder_path:
             current_date = datetime.now().strftime("%Y-%m-%d")
@@ -133,4 +138,29 @@ class FileManager:
         folder_path: Path = self.base_path / folder_path
         if not folder_path.exists():
             folder_path.mkdir()
-        return str(folder_path)
+        return folder_path
+    
+    def wait_until_file_is_present(self, folder_path: str, file_extension: str, timeout: int = 60):
+        """
+        Wait until a file with the specified extension is present in a folder.
+
+        Args:
+            folder_path: The path of the folder to search for the file.
+            file_extension: The extension of the file to wait for.
+            timeout: The maximum time (in seconds) to wait for the file before raising a TimeoutError.
+        """
+        start_time = time.time()
+        folder_path: Path = self.base_path / folder_path
+        
+        while True:
+            files = [f for f in folder_path.glob(f"*.{file_extension.lower()}")]
+        
+            if files:
+                break
+            
+            elapsed_time = time.time() - start_time
+            if elapsed_time >= timeout:
+                raise TimeoutError(f"Timeout: No {file_extension.upper()} file found within {timeout} seconds")
+            
+            time.sleep(1)
+            

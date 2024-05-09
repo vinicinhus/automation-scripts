@@ -11,17 +11,17 @@ Classes:
 - SFTPManager: A class to manage SFTP connections and file operations.
 
 Usage Example:
-    # Initialize SFTPManager
-    sftp_manager = SFTPManager(hostname='example.com', port=22, username='user', password='password')
+    >>> # Initialize SFTPManager
+    >>> sftp_manager = SFTPManager(hostname='example.com', port=22, username='user', password='password')
     
-    # Upload a file
-    sftp_manager.upload_file(local_path='local/file.txt', remote_path='remote/file.txt')
+    >>> # Upload a file
+    >>> sftp_manager.upload_file(local_path='local/file.txt', remote_path='remote/file.txt')
     
-    # Download a file
-    sftp_manager.download_file(remote_path='remote/file.txt', local_path='local/file.txt')
+    >>> # Download a file
+    >>> sftp_manager.download_file(remote_path='remote/file.txt', local_path='local/file.txt')
     
-    # Close the SFTP connection
-    sftp_manager.disconnect()
+    >>> # Close the SFTP connection
+    >>> sftp_manager.disconnect()
 """
 
 import socket

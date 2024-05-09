@@ -8,13 +8,13 @@ Dependencies:
     - selenium.webdriver.chrome.options.Options: Options class from Selenium WebDriver for configuring Chrome driver settings.
 
 Usage Example:
-    from selenium import webdriver
-    from chrome_driver_settings import driver_settings
+    >>> from selenium import webdriver
+    >>> from chrome_driver_settings import driver_settings
     
-    driver = webdriver.Chrome()
+    >>> driver = webdriver.Chrome()
     
-    options = driver_settings(download_directory='/path/to/download/directory')
-    driver = webdriver.Chrome(chrome_options=options)
+    >>> options = driver_settings(download_directory='/path/to/download/directory')
+    >>> driver = webdriver.Chrome(chrome_options=options)
 """
 
 from selenium.webdriver.chrome.options import Options

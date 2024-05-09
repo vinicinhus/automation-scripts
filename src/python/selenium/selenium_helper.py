@@ -8,14 +8,14 @@ Dependencies:
     - selenium: A powerful tool for controlling web browsers through programs and performing browser automation.
 
 Usage Example::
-    from selenium import webdriver
-    from selenium_helper import SeleniumHelper
+    >>> from selenium import webdriver
+    >>> from selenium_helper import SeleniumHelper
     
-    driver = webdriver.Chrome()
+    >>> driver = webdriver.Chrome()
     
-    helper = SeleniumHelper(driver)
+    >>> helper = SeleniumHelper(driver)
     
-    helper.click_element(By.ID, "button_id")
+    >>> helper.click_element(By.ID, "button_id")
 """
 
 from selenium import webdriver

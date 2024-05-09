@@ -10,20 +10,20 @@ Dependencies:
     pymssql 2.2.7: A simple database interface for Python that builds on top of FreeTDS to provide a Python DB-API (PEP-249) interface to Microsoft SQL Server.
 
 Usage Example:
-    from sql_database_connector import SQLDatabaseConnector
+    >>> from sql_database_connector import SQLDatabaseConnector
 
-    # Initialize a SQLDatabaseConnector object
-    connector = SQLDatabaseConnector(server='localhost', username='user', password='password', database='example_db')
+    >>> # Initialize a SQLDatabaseConnector object
+    >>> connector = SQLDatabaseConnector(server='localhost', username='user', password='password', database='example_db')
 
-    # Connect to the database
-    connector.connect()
+    >>> # Connect to the database
+    >>> connector.connect()
 
-    # Execute a query
-    query = "SELECT * FROM table_name"
-    result_df = connector.execute_query(query)
+    >>> # Execute a query
+    >>> query = "SELECT * FROM table_name"
+    >>> result_df = connector.execute_query(query)
 
-    # Disconnect from the database
-    connector.disconnect()
+    >>> # Disconnect from the database
+    >>> connector.disconnect()
 """
 
 from typing import Optional
