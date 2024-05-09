@@ -11,6 +11,8 @@ Classes:
 - SFTPManager: A class to manage SFTP connections and file operations.
 
 Usage Example:
+    >>> from sftp_manager import SFTPManager
+
     >>> # Initialize SFTPManager
     >>> sftp_manager = SFTPManager(hostname='example.com', port=22, username='user', password='password')
     

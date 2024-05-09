@@ -12,9 +12,7 @@ Usage Example::
     >>> from selenium_helper import SeleniumHelper
     
     >>> driver = webdriver.Chrome()
-    
     >>> helper = SeleniumHelper(driver)
-    
     >>> helper.click_element(By.ID, "button_id")
 """
 

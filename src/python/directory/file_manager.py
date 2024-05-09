@@ -10,7 +10,7 @@ Dependencies:
     - time: Provides time-related functions for waiting until a file is present.
 
 Usage Example:
-    from file_manager import FileManager
+    >>> from file_manager import FileManager
 
     >>> # Initialize FileManager with the current directory as the base path
     >>> file_manager = FileManager()
