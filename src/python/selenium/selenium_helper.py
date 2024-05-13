@@ -101,7 +101,7 @@ class SeleniumHelper:
             timeout (int): Maximum time to wait for the element in seconds. Defaults to 10 seconds.
         """
         wait = WebDriverWait(self.driver, timeout)
-        element = wait.until(ec.visibility_of_element_located((By, locator)))
+        element = wait.until(ec.presence_of_element_located((by, locator)))
         select = Select(element)
         select.select_by_value(option_value)
 
