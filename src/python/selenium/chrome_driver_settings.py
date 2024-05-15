@@ -8,13 +8,13 @@ Dependencies:
     - selenium.webdriver.chrome.options.Options: Options class from Selenium WebDriver for configuring Chrome driver settings.
 
 Usage Example:
-    >>> from selenium import webdriver
-    >>> from chrome_driver_settings import driver_settings
+    from selenium import webdriver
+    from chrome_driver_settings import driver_settings
     
-    >>> driver = webdriver.Chrome()
+    driver = webdriver.Chrome()
     
-    >>> options = driver_settings(download_directory='/path/to/download/directory')
-    >>> driver = webdriver.Chrome(chrome_options=options)
+    options = driver_settings(download_directory='/path/to/download/directory')
+    driver = webdriver.Chrome(chrome_options=options)
 """
 
 from selenium.webdriver.chrome.options import Options
@@ -35,11 +35,10 @@ def driver_settings(download_directory: Optional[str] = None) -> Options:
     options.add_argument("--disable-gpu")  # Disable GPU for the browser
     options.add_argument("--disable-dev-shn-usage")  # Disable developer usage features
     options.add_argument("--start-maximized")  # Start the browser in maximized fullscreen mode
-    options.add_argument(
-        "--safebrowsing-disable-download-protection")  # Disable download protection provided by Safe Browsing
+    options.add_argument("--safebrowsing-disable-download-protection")  # Disable download protection provided by Safe Browsing
     options.add_argument("--disable-extensions")  # Disables Chrome extensions.
-    options.add_argument(
-        "--ignore-certificate-errors")  # Ignores SSL certificate errors, allowing Chrome to load pages with HTTPS errors.
+    options.add_argument("--ignore-certificate-errors")  # Ignores SSL certificate errors, allowing Chrome to load pages with HTTPS errors.
+    options.add_argument('--ignore-ssl-errors')
     options.add_argument("--disable-infobars")  # Disable the 'infobars' that pop up at the top of Chrome windows.
     options.add_argument("--disable-browser-side-navigation")  # Disable browser side navigation
 
