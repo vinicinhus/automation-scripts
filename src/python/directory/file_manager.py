@@ -28,6 +28,9 @@ Usage Example:
     >>> # Move multiple files to different locations using a mapping dictionary
     >>> path_mapping = {"file1.txt": "destination_folder1", "file2.txt": "destination_folder2"}
     >>> file_manager.move_files(path_mapping)
+    
+    >>> # Move all files from one folder to a destination folder
+    >>> file_manager.move_all_files("source_folder", "destination_folder")
 
     >>> # Exclude (delete) a file
     >>> file_manager.exclude_file("file_to_delete.txt")
@@ -55,6 +58,7 @@ class FileManager:
         """
         self.base_path: Path = Path.cwd()
 
+    # Methods for renaming files
     def rename_file(self, old_path: str, new_path: str) -> None:
         """
         Rename a file.
@@ -66,18 +70,6 @@ class FileManager:
         file_path: Path = self.base_path / old_path
         file_path.rename(self.base_path / new_path)
 
-    def move_file(self, file_path: str, destination: str) -> None:
-        """
-        Move a file to a different location.
-
-        Args:
-            file_path: The name of the file to be moved.
-            destination: The destination folder path where the file will be moved.
-        """
-        file_path: Path = self.base_path / file_path
-        destination_path: Path = self.base_path / destination
-        file_path.rename(destination_path / file_path)
-
     def rename_files(self, path_mapping: Dict[str, str]) -> None:
         """
         Rename multiple files using a mapping dictionary.
@@ -88,6 +80,19 @@ class FileManager:
         for old_path, new_path in path_mapping.items():
             self.rename_file(old_path, new_path)
 
+    # Methods for moving files
+    def move_file(self, file_path: str, destination: str) -> None:
+        """
+        Move a file to a different location.
+
+        Args:
+            file_path: The name of the file to be moved.
+            destination: The destination folder path where the file will be moved.
+        """
+        file_path: Path = self.base_path / file_path
+        destination_path: Path = self.base_path / destination
+        file_path.rename(destination_path / file_path.name)
+
     def move_files(self, path_mapping: Dict[str, str]) -> None:
         """
         Move multiple files to different locations using a mapping dictionary.
@@ -97,7 +102,24 @@ class FileManager:
         """
         for file_path, destination in path_mapping.items():
             self.move_file(file_path, destination)
+    
+    def move_all_files(self, source_folder: str, destination_folder: str) -> None:
+        """
+        Move all files from one folder to a destination folder.
 
+        Args:
+            source_folder: The folder containing files to be moved.
+            destination_folder: The destination folder path where the files will be moved.
+        """
+        source_path: Path = self.base_path / source_folder
+        destination_path: Path = self.base_path / destination_folder
+        destination_path.mkdir(parents=True, exist_ok=True)
+        
+        for file_path in source_path.iterdir():
+            if file_path.is_file():
+                file_path.rename(destination_path / file_path.name)
+
+    # Methods for excluding (deleting) files
     def exclude_file(self, file_path: str) -> None:
         """
         Exclude (delete) a file.
@@ -108,7 +130,7 @@ class FileManager:
         file_path: Path = self.base_path / file_path
         file_path.unlink()
 
-    def exclude_files_in_folder(self, folder_path: str) -> None:
+    def exclude_all_files(self, folder_path: str) -> None:
         """
         Exclude (delete) all files in a folder.
 
@@ -119,6 +141,7 @@ class FileManager:
         for file_path in folder_path.iterdir():
             file_path.unlink()
 
+    # Method for creating folders
     def create_folder(self, folder_path: str) -> Path:
         """
         Create a new folder if it does not already exist.
@@ -139,7 +162,8 @@ class FileManager:
         if not folder_path.exists():
             folder_path.mkdir()
         return folder_path
-    
+
+    # Method for waiting until a file is present
     def wait_until_file_is_present(self, folder_path: str, file_extension: str, timeout: int = 60):
         """
         Wait until a file with the specified extension is present in a folder.
@@ -160,7 +184,7 @@ class FileManager:
             
             elapsed_time = time.time() - start_time
             if elapsed_time >= timeout:
-                raise TimeoutError(f"Timeout: No {file_extension.upper()} file found within {timeout} seconds")
+                raise TimeoutError(f"Timeout: No {file_extension} file found within {timeout} seconds")
             
             time.sleep(1)
             
