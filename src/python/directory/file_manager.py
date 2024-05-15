@@ -36,7 +36,10 @@ Usage Example:
     >>> file_manager.exclude_file("file_to_delete.txt")
 
     >>> # Exclude (delete) all files in a folder
-    >>> file_manager.exclude_files_in_folder("folder_to_clear")
+    >>> file_manager.exclude_all_files("folder_to_clear")
+    
+    >>> # Clear all files from a directory tree
+    >>> file_manager.clear_directory_tree("directory_to_clear")
 
     >>> # Create a new folder if it does not already exist
     >>> created_folder_path = file_manager.create_folder("new_folder")
@@ -140,6 +143,18 @@ class FileManager:
         folder_path: Path = self.base_path / folder_path
         for file_path in folder_path.iterdir():
             file_path.unlink()
+
+    def clear_directory_tree(self, directory_path: str) -> None:
+        """
+        Clear all files from a directory tree.
+
+        Args:
+            directory_path: The path of the directory tree to be cleared.
+        """
+        directory_path: Path = self.base_path / directory_path
+        for path in directory_path.rglob('*'):
+            if path.is_file():
+                path.unlink()
 
     # Method for creating folders
     def create_folder(self, folder_path: str) -> Path:
