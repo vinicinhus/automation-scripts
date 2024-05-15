@@ -18,14 +18,15 @@ Usage Example:
 """
 
 from selenium.webdriver.chrome.options import Options
+from typing import Optional
 
 
-def driver_settings(download_directory: str = None) -> Options:
+def driver_settings(download_directory: Optional[str] = None) -> Options:
     """
     Configure Chrome driver settings for automated web scraping.
 
     Args:
-        download_directory (str, optional): The directory where downloaded files will be saved.
+        download_directory (Optional[str]): The directory where downloaded files will be saved.
 
     Returns:
         selenium.webdriver.chrome.options.Options: Chrome driver options with custom settings.
