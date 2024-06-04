@@ -19,6 +19,9 @@ class RecaptchaV2EnterpriseProxylessExample:
         password_element = self.driver.find_element(By.ID, "password-id")
         password_element.send_keys("my-secret-password")
         
+        button_element = self.driver.find_element(By.ID, "button-id")
+        button_element.click()
+        
         current_url: str = self.driver.current_url
         
         solver = recaptchaV2EnterpriseProxyless()
