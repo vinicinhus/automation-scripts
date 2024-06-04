@@ -1,5 +1,5 @@
 /**
- * Module: telegram_manager
+ * Module: telegramManager.js
  *
  * This module provides a class for sending messages to a Telegram group using the node-telegram-bot-api library.
  *

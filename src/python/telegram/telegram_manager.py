@@ -1,5 +1,5 @@
 """
-Module: telegram_manager
+Module: telegram_manager.py
 
 This module provides a class for sending messages to a Telegram group using the python-telegram-bot library and logging with Loguru.
 
