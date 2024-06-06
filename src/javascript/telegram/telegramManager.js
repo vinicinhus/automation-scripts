@@ -61,7 +61,7 @@ class TelegramManager {
    */
   stopBot() {
     this.bot.stopPolling();
-    console.log('Bot stopped.');
+    console.log('TelegramSender Bot stopped.');
   }
 }
 
