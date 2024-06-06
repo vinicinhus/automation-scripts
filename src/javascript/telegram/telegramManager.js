@@ -55,6 +55,14 @@ class TelegramManager {
       throw error;
     }
   }
+
+  /**
+   * Stops the Telegram bot from polling for new messages.
+   */
+  stopBot() {
+    this.bot.stopPolling();
+    console.log('Bot stopped.');
+  }
 }
 
 module.exports = TelegramManager;
