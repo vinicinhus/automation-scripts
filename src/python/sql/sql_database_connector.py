@@ -13,17 +13,17 @@ Usage Example:
     >>> from sql_database_connector import SQLDatabaseConnector
 
     >>> # Initialize a SQLDatabaseConnector object
-    >>> connector = SQLDatabaseConnector(server='localhost', username='user', password='password', database='example_db')
+    >>> sql_connector = SQLDatabaseConnector(server='localhost', username='user', password='password', database='example_db')
 
     >>> # Connect to the database
-    >>> connector.connect()
+    >>> sql_connector.connect()
 
     >>> # Execute a query
     >>> query = "SELECT * FROM table_name"
-    >>> result_df = connector.execute_query(query)
+    >>> result_df = sql_connector.execute_query(query)
 
     >>> # Disconnect from the database
-    >>> connector.disconnect()
+    >>> sql_connector.disconnect()
 """
 
 from typing import Optional
