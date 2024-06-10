@@ -46,12 +46,19 @@ Usage Example:
     
     >>> # Wait until a file with the specified extension is present in a folder
     >>> file_manager.wait_until_file_is_present("folder_path", "file_extension", timeout=60)
+    
+    >>> # Check if a file with the specified extension is present in a folder
+    >>> is_present = file_manager.is_file_extension_present("folder_path", "txt")
+    
+    >>> # Check if multiple folders contain files with specified extensions
+    >>> folder_extension_mapping = {"folder1": "txt", "folder2": "csv"}
+    >>> extensions_present = file_manager.are_extensions_present_in_folders(folder_extension_mapping)
 """
 
+import time
 from datetime import datetime
 from pathlib import Path
 from typing import Dict
-import time
 
 
 class FileManager:
@@ -61,7 +68,6 @@ class FileManager:
         """
         self.base_path: Path = Path.cwd()
 
-    # Methods for renaming files
     def rename_file(self, old_path: str, new_path: str) -> None:
         """
         Rename a file.
@@ -83,7 +89,6 @@ class FileManager:
         for old_path, new_path in path_mapping.items():
             self.rename_file(old_path, new_path)
 
-    # Methods for moving files
     def move_file(self, file_path: str, destination: str) -> None:
         """
         Move a file to a different location.
@@ -105,7 +110,7 @@ class FileManager:
         """
         for file_path, destination in path_mapping.items():
             self.move_file(file_path, destination)
-    
+
     def move_all_files(self, source_folder: str, destination_folder: str) -> None:
         """
         Move all files from one folder to a destination folder.
@@ -117,12 +122,11 @@ class FileManager:
         source_path: Path = self.base_path / source_folder
         destination_path: Path = self.base_path / destination_folder
         destination_path.mkdir(parents=True, exist_ok=True)
-        
+
         for file_path in source_path.iterdir():
             if file_path.is_file():
                 file_path.rename(destination_path / file_path.name)
 
-    # Methods for excluding (deleting) files
     def exclude_file(self, file_path: str) -> None:
         """
         Exclude (delete) a file.
@@ -152,11 +156,10 @@ class FileManager:
             directory_path: The path of the directory tree to be cleared.
         """
         directory_path: Path = self.base_path / directory_path
-        for path in directory_path.rglob('*'):
+        for path in directory_path.rglob("*"):
             if path.is_file():
                 path.unlink()
 
-    # Method for creating folders
     def create_folder(self, folder_path: str) -> Path:
         """
         Create a new folder if it does not already exist.
@@ -165,21 +168,22 @@ class FileManager:
             folder_path: The name of the new folder to be created.
                          If the string contains '{time:YYYY-MM-DD}', it will be replaced
                          with the current date in the specified format.
-                         
+
         Returns:
             Path: The path of the created folder.
         """
-        if '{time:YYYY-MM-DD}' in folder_path:
+        if "{time:YYYY-MM-DD}" in folder_path:
             current_date = datetime.now().strftime("%Y-%m-%d")
-            folder_path = folder_path.replace('{time:YYYY-MM-DD}', current_date)
+            folder_path = folder_path.replace("{time:YYYY-MM-DD}", current_date)
 
         folder_path: Path = self.base_path / folder_path
         if not folder_path.exists():
             folder_path.mkdir()
         return folder_path
 
-    # Method for waiting until a file is present
-    def wait_until_file_is_present(self, folder_path: str, file_extension: str, timeout: int = 60):
+    def wait_until_file_is_present(
+        self, folder_path: str, file_extension: str, timeout: int = 60
+    ):
         """
         Wait until a file with the specified extension is present in a folder.
 
@@ -190,16 +194,50 @@ class FileManager:
         """
         start_time = time.time()
         folder_path: Path = self.base_path / folder_path
-        
+
         while True:
             files = [f for f in folder_path.glob(f"*.{file_extension.lower()}")]
-        
+
             if files:
                 break
-            
+
             elapsed_time = time.time() - start_time
             if elapsed_time >= timeout:
-                raise TimeoutError(f"Timeout: No {file_extension} file found within {timeout} seconds")
-            
+                raise TimeoutError(
+                    f"Timeout: No {file_extension} file found within {timeout} seconds"
+                )
+
             time.sleep(1)
-            
+
+    def is_file_extension_present(self, folder_path: str, file_extension: str) -> bool:
+        """
+        Check if a file with the specified extension is present in a folder.
+
+        Args:
+            folder_path: The path of the folder to search for the file.
+            file_extension: The extension of the file to check for.
+
+        Returns:
+            bool: True if a file with the specified extension is found, False otherwise.
+        """
+        folder_path: Path = self.base_path / folder_path
+        return any(folder_path.glob(f"*.{file_extension.lower()}"))
+
+    def are_extensions_present_in_folders(
+        self, folder_extension_mapping: Dict[str, str]
+    ) -> Dict[str, bool]:
+        """
+        Check if each folder in the provided mapping contains at least one file with the specified extension.
+
+        Args:
+            folder_extension_mapping: A dictionary where keys are folder paths and values are file extensions.
+
+        Returns:
+            Dict[str, bool]: A dictionary where keys are folder paths and values are booleans indicating the presence of files with the specified extension.
+        """
+        result = {}
+        for folder_path, file_extension in folder_extension_mapping.items():
+            result[folder_path] = self.is_file_extension_present(
+                folder_path, file_extension
+            )
+        return result
