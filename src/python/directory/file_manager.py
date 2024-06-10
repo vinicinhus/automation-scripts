@@ -47,12 +47,12 @@ Usage Example:
     >>> # Wait until a file with the specified extension is present in a folder
     >>> file_manager.wait_until_file_is_present("folder_path", "file_extension", timeout=60)
     
-    >>> # Check if a file with the specified extension is present in a folder
-    >>> is_present = file_manager.is_file_extension_present("folder_path", "txt")
-    
-    >>> # Check if multiple folders contain files with specified extensions
-    >>> folder_extension_mapping = {"folder1": "txt", "folder2": "csv"}
-    >>> extensions_present = file_manager.are_extensions_present_in_folders(folder_extension_mapping)
+    >>> # Check if a file with the extension .txt exists in a folder
+    >>> has_pdf_in_folder = file_manager.has_file_with_extension("/path/to/folder", ".txt")
+    >>> if has_pdf_in_folder:
+    >>>     print("A .txt file exists in the folder.")
+    >>> else:
+    >>>     print("No .txt file found in the folder.")
 """
 
 import time
@@ -209,35 +209,25 @@ class FileManager:
 
             time.sleep(1)
 
-    def is_file_extension_present(self, folder_path: str, file_extension: str) -> bool:
+    def has_file_with_extension(self, folder_path: str, extension: str) -> bool:
         """
-        Check if a file with the specified extension is present in a folder.
+        Checks if a file with the given extension exists in the folder.
 
         Args:
-            folder_path: The path of the folder to search for the file.
-            file_extension: The extension of the file to check for.
+            folder_path (str): The path to the folder to check.
+            extension (str): The extension of the file to search for (e.g., ".pdf").
 
         Returns:
-            bool: True if a file with the specified extension is found, False otherwise.
+            bool: True if a file with the extension exists, False otherwise.
         """
         folder_path: Path = self.base_path / folder_path
-        return any(folder_path.glob(f"*.{file_extension}"))
+        
+        if not folder_path.is_dir():
+            raise ValueError(f"{folder_path} is not a valid directory")
 
-    def are_extensions_present_in_folders(
-        self, folder_extension_mapping: Dict[str, str]
-    ) -> Dict[str, bool]:
-        """
-        Check if each folder in the provided mapping contains at least one file with the specified extension.
+        for file in folder_path.iterdir():
+            if file.is_file() and file.suffix.lower() == extension.lower():
+                return True
 
-        Args:
-            folder_extension_mapping: A dictionary where keys are folder paths and values are file extensions.
-
-        Returns:
-            Dict[str, bool]: A dictionary where keys are folder paths and values are booleans indicating the presence of files with the specified extension.
-        """
-        result = {}
-        for folder_path, file_extension in folder_extension_mapping.items():
-            result[folder_path] = self.is_file_extension_present(
-                folder_path, file_extension
-            )
-        return result
+        return False
+    
