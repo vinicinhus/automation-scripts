@@ -221,7 +221,7 @@ class FileManager:
             bool: True if a file with the specified extension is found, False otherwise.
         """
         folder_path: Path = self.base_path / folder_path
-        return any(folder_path.glob(f"*.{file_extension.lower()}"))
+        return any(folder_path.glob(f"*.{file_extension}"))
 
     def are_extensions_present_in_folders(
         self, folder_extension_mapping: Dict[str, str]
