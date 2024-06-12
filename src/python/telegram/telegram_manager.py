@@ -45,8 +45,6 @@ class TelegramManager:
         self.chat_id = chat_id
         self.bot = Bot(token=self.token)
 
-        logger.add("file.log", rotation="1 MB")
-
     async def send_message_to_group(self, message: str) -> None:
         """
         Sends a message to the Telegram group.
