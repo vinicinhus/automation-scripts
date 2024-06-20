@@ -24,7 +24,7 @@
  *         .catch(error => console.error('Error sending message:', error));
  */
 
-const TelegramBot = require('node-telegram-bot-api');
+const TelegramBot = require("node-telegram-bot-api");
 
 class TelegramManager {
   /**
@@ -48,10 +48,10 @@ class TelegramManager {
   async sendMessageToGroup(message) {
     try {
       const response = await this.bot.sendMessage(this.chatId, message);
-      console.log('Message sent successfully:', response);
+      console.log("Message sent successfully:", response);
       return response;
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error("Error sending message:", error);
       throw error;
     }
   }
@@ -61,7 +61,7 @@ class TelegramManager {
    */
   stopBot() {
     this.bot.stopPolling();
-    console.log('TelegramSender Bot stopped.');
+    console.log("TelegramSender Bot stopped.");
   }
 }
 
