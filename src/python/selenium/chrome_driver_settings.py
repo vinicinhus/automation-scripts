@@ -13,7 +13,7 @@ Usage Example:
     
     driver = webdriver.Chrome()
     
-    options = driver_settings(download_directory='/path/to/download/directory')
+    options = driver_settings(download_directory='/path/to/download/directory', headless_mode=True)
     driver = webdriver.Chrome(chrome_options=options)
 """
 
@@ -22,17 +22,20 @@ from typing import Optional
 from selenium.webdriver.chrome.options import Options
 
 
-def driver_settings(download_directory: Optional[str] = None) -> Options:
+def driver_settings(download_directory: Optional[str] = None, headless_mode: bool = False) -> Options:
     """
     Configure Chrome driver settings for automated web scraping.
 
     Args:
         download_directory (Optional[str]): The directory where downloaded files will be saved.
+        headless_mode (bool): If True, enables headless mode for the browser. Default is False.
 
     Returns:
         selenium.webdriver.chrome.options.Options: Chrome driver options with custom settings.
     """
     options = Options()
+    if headless_mode:
+        options.add_argument("--headless=new") # Enables headless mode for the browser
     options.add_argument("--disable-gpu")  # Disable GPU for the browser
     options.add_argument("--disable-dev-shn-usage")  # Disable developer usage features
     options.add_argument("--start-maximized")  # Start the browser in maximized fullscreen mode
