@@ -1,10 +1,10 @@
 """
-Module: email_sender
+Module: email_manager
 
 This module provides a class for sending emails with attachments using SMTP.
 
 Classes:
-    EmailSender: A class for sending emails with HTML content and optional attachments.
+    EmailManager: A class for sending emails with HTML content and optional attachments.
 
 Dependencies:
     smtplib: A Python library for sending emails using the Simple Mail Transfer Protocol (SMTP).
@@ -12,9 +12,9 @@ Dependencies:
     loguru: A library for logging messages in a user-friendly manner.
 
 Usage Example:
-    >>> from email_sender import EmailSender
-    >>> email_sender = EmailSender(sender='your_email@example.com', password='your_password', server='smtp.example.com', port=587)
-    >>> email_sender.send_email(html_template='<h1>Hello</h1>', subject='Test Email', email_receivers=['receiver@example.com'], file_paths=['/path/to/file.txt'])
+    >>> from email_sender import EmailManager
+    >>> email_manager = EmailManager(sender='your_email@example.com', password='your_password', server='smtp.example.com', port=587)
+    >>> email_manager.send_email(html_template='<h1>Hello</h1>', subject='Test Email', email_receivers=['receiver@example.com'], file_paths=['/path/to/file.txt'])
 """
 
 import smtplib
@@ -23,12 +23,12 @@ from email.header import Header
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-
 from typing import List
+
 from loguru import logger
 
 
-class EmailSender:
+class EmailManager:
     """
     A class for sending emails with HTML content and optional attachments.
 
@@ -47,7 +47,7 @@ class EmailSender:
 
     def __init__(self, sender: str, password: str, server: str, port: int):
         """
-        Initializes the EmailSender with the necessary credentials and server details.
+        Initializes the EmailManager with the necessary credentials and server details.
 
         Parameters:
         - sender (str): The email address of the sender.
@@ -59,7 +59,7 @@ class EmailSender:
         self.password = password
         self.server = server
         self.port = port
-        logger.info(f"EmailSender initialized with sender: {sender}, server: {server}, port: {port}")
+        logger.info(f"EmailManager initialized with sender: {sender}, server: {server}, port: {port}")
 
     def send_email(self, html_template: str, subject: str, email_receivers: List[str], file_paths: List[str] = None):
         """
