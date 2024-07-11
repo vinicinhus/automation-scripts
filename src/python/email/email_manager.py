@@ -18,6 +18,7 @@ Usage Example:
 """
 
 import smtplib
+import re
 from email import encoders
 from email.header import Header
 from email.mime.base import MIMEBase
@@ -61,6 +62,23 @@ class EmailManager:
         self.port = port
         logger.info(f"EmailManager initialized with sender: {sender}, server: {server}, port: {port}")
 
+    def _check_filename(self, filename: str) -> bool:
+        """
+        Checks if the filename contains any special characters or accented characters.
+
+        Parameters:
+        - filename (str): The name of the file to check.
+
+        Returns:
+        - bool: True if the filename is valid, False otherwise.
+
+        Raises:
+        - ValueError: If the filename contains special or accented characters.
+        """
+        if re.search(r'[<>:"/\\|?*]|[áéíóúàèìòùâêîôûãõäëïöüçÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÄËÏÖÜÇ]', filename):
+            raise ValueError(f"Filename '{filename}' contains special or accented characters.")
+        return True
+
     def send_email(self, html_template: str, subject: str, email_receivers: List[str], file_paths: List[str] = None):
         """
         Sends an email with an HTML template and optional attached files.
@@ -89,6 +107,9 @@ class EmailManager:
 
             if file_paths:
                 for file_path in file_paths:
+                    filename = file_path.split("/")[-1]
+                    self._check_filename(filename)
+                    
                     with open(file_path, "rb") as file:
                         part = MIMEBase("application", "octet-stream")
                         part.set_payload(file.read())
