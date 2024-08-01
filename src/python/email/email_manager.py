@@ -17,8 +17,9 @@ Usage Example:
     >>> email_manager.send_email(html_template='<h1>Hello</h1>', subject='Test Email', email_receivers=['receiver@example.com'], file_paths=['/path/to/file.txt'])
 """
 
-import smtplib
+import os
 import re
+import smtplib
 from email import encoders
 from email.header import Header
 from email.mime.base import MIMEBase
@@ -107,15 +108,19 @@ class EmailManager:
 
             if file_paths:
                 for file_path in file_paths:
-                    filename = file_path.split("/")[-1]
+                    # Normalize the file path
+                    normalized_file_path = os.path.normpath(file_path)
+                    filename = os.path.basename(normalized_file_path)
                     self._check_filename(filename)
-                    
-                    with open(file_path, "rb") as file:
+
+                    if not os.path.exists(normalized_file_path):
+                        raise FileNotFoundError(f"File not found: {normalized_file_path}")
+
+                    with open(normalized_file_path, "rb") as file:
                         part = MIMEBase("application", "octet-stream")
                         part.set_payload(file.read())
                     encoders.encode_base64(part)
 
-                    filename = file_path.split("/")[-1]
                     header = Header(filename, charset="utf-8")
                     header_encoded = header.encode()
 
@@ -125,7 +130,7 @@ class EmailManager:
                         filename=header_encoded,
                     )
                     message.attach(part)
-                    logger.info(f"Attached file: {file_path}")
+                    logger.info(f"Attached file: {normalized_file_path}")
 
             with smtplib.SMTP(self.server, self.port) as smtp:
                 smtp.starttls()
