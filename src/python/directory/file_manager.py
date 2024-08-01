@@ -182,7 +182,7 @@ class FileManager:
         return folder_path
 
     def wait_until_file_is_present(
-        self, folder_path: str, file_extension: str, timeout: int = 60
+            self, folder_path: str, file_extension: str, timeout: int = 60
     ):
         """
         Wait until a file with the specified extension is present in a folder.
@@ -221,7 +221,7 @@ class FileManager:
             bool: True if a file with the extension exists, False otherwise.
         """
         folder_path: Path = self.base_path / folder_path
-        
+
         if not folder_path.is_dir():
             raise ValueError(f"{folder_path} is not a valid directory")
 
@@ -230,4 +230,3 @@ class FileManager:
                 return True
 
         return False
-    
