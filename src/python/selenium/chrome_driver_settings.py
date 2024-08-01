@@ -35,7 +35,7 @@ def driver_settings(download_directory: Optional[str] = None, headless_mode: boo
     """
     options = Options()
     if headless_mode:
-        options.add_argument("--headless=new") # Enables headless mode for the browser
+        options.add_argument("--headless=new")  # Enables headless mode for the browser
     options.add_argument("--disable-gpu")  # Disable GPU for the browser
     options.add_argument("--disable-dev-shn-usage")  # Disable developer usage features
     options.add_argument("--start-maximized")  # Start the browser in maximized fullscreen mode
