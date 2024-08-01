@@ -24,15 +24,16 @@ Usage Example:
     >>> asyncio.run(manager.send_message_to_group(message))
 """
 
+from loguru import logger
 from telegram import Bot
 from telegram.error import TelegramError
-from loguru import logger
 
 
 class TelegramManager:
     """
     A class for managing a Telegram bot to send messages to a group.
     """
+
     def __init__(self, token: str, chat_id: str) -> None:
         """
         Initializes the TelegramManager with the provided token and chat ID.
