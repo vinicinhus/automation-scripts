@@ -1,13 +1,16 @@
 """
 Module: sql_database_connector
 
-This module provides a class for connecting to a Microsoft SQL Server database using PyMSSQL and executing queries.
+This module provides the `SQLDatabaseConnector` class for connecting to and interacting with a Microsoft SQL Server database using PyMSSQL.
 
-Classes:
-    SQLDatabaseConnector: A class for connecting to a SQL Server database and executing queries.
+The class allows for establishing a connection to the database, executing SQL queries, and closing the connection.
 
 Dependencies:
     pymssql 2.2.7: A simple database interface for Python that builds on top of FreeTDS to provide a Python DB-API (PEP-249) interface to Microsoft SQL Server.
+    pandas: A data analysis and manipulation library that provides data structures and functions needed to work with structured data.
+
+Classes:
+    SQLDatabaseConnector: A class that handles connection to a SQL Server database and supports executing SQL queries.
 
 Usage Example:
     >>> from sql_database_connector import SQLDatabaseConnector
@@ -26,7 +29,7 @@ Usage Example:
     >>> sql_connector.disconnect()
 """
 
-from typing import Optional
+from typing import List, Optional, Union
 
 import pandas as pd
 import pymssql
@@ -35,33 +38,33 @@ from loguru import logger
 
 class SQLDatabaseConnector:
     """
-    A class to connect to a Microsoft SQL Server database using PyMSSQL and execute queries.
+    A class to manage connection to a Microsoft SQL Server database using PyMSSQL and to execute SQL queries.
 
     Args:
         server (str): The server name or IP address of the SQL Server instance.
         username (str): The username for authentication.
         password (str): The password for authentication.
-        database (str, optional): The name of the database to connect to.
+        database (str, optional): The name of the database to connect to. Defaults to None.
 
     Attributes:
         server (str): The server name or IP address of the SQL Server instance.
         username (str): The username for authentication.
         password (str): The password for authentication.
-        database (str): The name of the database to connect to.
-        connection: The connection object to the database.
+        database (Optional[str]): The name of the database to connect to.
+        connection (Optional[pymssql.Connection]): The connection object to the database. Initially None.
     """
 
     def __init__(
             self, server: str, username: str, password: str, database: Optional[str] = None
     ) -> None:
         """
-        Initialize a DatabaseConnector object.
+        Initialize the SQLDatabaseConnector object.
 
         Args:
             server (str): The server address or hostname.
             username (str): The username for authentication.
             password (str): The password for authentication.
-            database (Optional[str], optional): The name of the database to connect to. Defaults to None.
+            database (Optional[str]): The name of the database to connect to. Defaults to None.
         """
         self.server = server
         self.username = username
@@ -74,94 +77,111 @@ class SQLDatabaseConnector:
         Establishes a connection to the SQL Server database.
 
         Raises:
-            pymssql.InterfaceError: If there is an interface error connecting to the database.
-            pymssql.DatabaseError: If there is a database error connecting to the database.
-            Exception: If an unexpected error occurs while connecting.
+            pymssql.InterfaceError: If there is an error with the interface connection.
+            pymssql.DatabaseError: If there is an error with the database connection.
+            Exception: For any other unexpected errors.
         """
         try:
-            if self.database:
-                connection_string = {
+            connection_params = (
+                {
                     "server": self.server,
                     "user": self.username,
                     "password": self.password,
                     "database": self.database,
                 }
-            else:
-                connection_string = {
+                if self.database
+                else {
                     "server": self.server,
                     "user": self.username,
                     "password": self.password,
                 }
-            self.connection = pymssql.connect(**connection_string)
-            logger.info("Connected to the SQL database")
+            )
+            self.connection = pymssql.connect(**connection_params)
+            logger.info("Successfully connected to the SQL database.")
         except pymssql.InterfaceError as e:
-            logger.error(f"InterfaceError connecting to database: {e}")
+            logger.error(f"Failed to connect to database: InterfaceError - {e}")
             raise
         except pymssql.DatabaseError as e:
-            logger.error(f"DatabaseError connecting to database: {e}")
+            logger.error(f"Failed to connect to database: DatabaseError - {e}")
             raise
         except Exception as e:
-            logger.error(
-                f"An unexpected error occurred while connecting to database: {e}"
-            )
+            logger.error(f"Unexpected error occurred while connecting to database: {e}")
             raise
 
     def disconnect(self) -> None:
         """
-        Disconnects from the SQL Server database.
+        Closes the connection to the SQL Server database.
 
         Raises:
-            pymssql.DatabaseError: If there is a database error disconnecting from the database.
-            pymssql.InterfaceError: If there is an interface error disconnecting from the database.
-            Exception: If an unexpected error occurs while disconnecting.
+            pymssql.DatabaseError: If there is an error with the database during disconnection.
+            pymssql.InterfaceError: If there is an error with the interface during disconnection.
+            Exception: For any other unexpected errors.
         """
         try:
             if self.connection:
                 self.connection.close()
-                logger.info("Disconnected from the database")
+                logger.info("Successfully disconnected from the SQL database.")
         except pymssql.DatabaseError as e:
-            logger.error(f"DatabaseError disconnecting from database: {e}")
+            logger.error(f"Failed to disconnect from database: DatabaseError - {e}")
             raise
         except pymssql.InterfaceError as e:
-            logger.error(f"InterfaceError disconnecting from database: {e}")
+            logger.error(f"Failed to disconnect from database: InterfaceError - {e}")
             raise
         except Exception as e:
             logger.error(
-                f"An unexpected error occurred while disconnecting from database: {e}"
+                f"Unexpected error occurred while disconnecting from database: {e}"
             )
             raise
 
-    def execute_query(self, query: str) -> pd.DataFrame:
+    def execute_query(
+            self, query: str, params: Optional[List[Union[str, int]]] = None
+    ) -> Optional[pd.DataFrame]:
         """
-        Executes a SQL query and returns the result as a DataFrame.
+        Executes a SQL query on the connected database and returns the results as a pandas DataFrame if the query is a SELECT statement.
 
         Args:
             query (str): The SQL query to execute.
+            params (Optional[List[Union[str, int]]]): The parameters to pass with the query. Defaults to None.
 
         Returns:
-            pd.DataFrame: A DataFrame containing the result of the query, or None if an error occurs.
+            Optional[pd.DataFrame]: A DataFrame containing the query results for SELECT statements, or None for other types of queries.
 
         Raises:
-            pymssql.ProgrammingError: If there is a programming error executing the query.
-            pymssql.DatabaseError: If there is a database error executing the query.
-            pymssql.InterfaceError: If there is an interface error executing the query.
-            Exception: If an unexpected error occurs while executing the query.
+            pymssql.ProgrammingError: If there is an error with the SQL query syntax.
+            pymssql.DatabaseError: If there is a database error during query execution.
+            pymssql.InterfaceError: If there is an error with the interface during query execution.
+            Exception: For any other unexpected errors.
         """
         try:
             cursor = self.connection.cursor()
-            logger.info("Retrieving query data")
-            dataframe = pd.read_sql(query, self.connection)
-            logger.info(f"Dataframe retrieved, length: {len(dataframe)}")
-            return dataframe
+            cursor.execute(query, params)
+
+            if "SELECT" in query.upper():
+                data = cursor.fetchall()
+                columns = [desc[0] for desc in cursor.description]
+                dataframe = pd.DataFrame(data, columns=columns)
+                logger.info(
+                    f"Query executed successfully. Data retrieved: {len(dataframe)} rows."
+                )
+                return dataframe
+            else:
+                self.connection.commit()
+                if "INSERT" in query.upper():
+                    logger.info("Data inserted successfully.")
+                elif "UPDATE" in query.upper():
+                    logger.info("Data updated successfully.")
+                elif "DELETE" in query.upper():
+                    logger.info("Data deleted successfully.")
+                return None
         except pymssql.ProgrammingError as e:
-            logger.error(f"ProgrammingError executing query: {e}")
+            logger.error(f"Failed to execute query: ProgrammingError - {e}")
             raise
         except pymssql.DatabaseError as e:
-            logger.error(f"DatabaseError executing query: {e}")
+            logger.error(f"Failed to execute query: DatabaseError - {e}")
             raise
         except pymssql.InterfaceError as e:
-            logger.error(f"InterfaceError executing query: {e}")
+            logger.error(f"Failed to execute query: InterfaceError - {e}")
             raise
         except Exception as e:
-            logger.error(f"An unexpected error occurred while executing query: {e}")
+            logger.error(f"Unexpected error occurred while executing query: {e}")
             raise
