@@ -141,3 +141,24 @@ class SeleniumHelper:
             return True
         except NoSuchElementException:
             return False
+
+    def get_element_text(
+            self, by: By, locator: str, timeout: int = DEFAULT_TIMEOUT
+    ) -> str:
+        """
+        Retrieve the text content of a visible element identified by a locator.
+
+        Args:
+            by (By): The locator strategy (e.g., By.ID, By.XPATH, By.NAME, etc.).
+            locator (str): The value of the locator for the element.
+            timeout (int): Maximum time to wait for the element in seconds. Defaults to 10 seconds.
+
+        Returns:
+            str: The text content of the element. If the element is not found, returns an empty string.
+        """
+        try:
+            wait = WebDriverWait(self.driver, timeout)
+            element = wait.until(ec.visibility_of_element_located((by, locator)))
+            return element.text
+        except NoSuchElementException:
+            return ""
