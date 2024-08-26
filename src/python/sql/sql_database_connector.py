@@ -55,7 +55,7 @@ class SQLDatabaseConnector:
     """
 
     def __init__(
-            self, server: str, username: str, password: str, database: Optional[str] = None
+        self, server: str, username: str, password: str, database: Optional[str] = None
     ) -> None:
         """
         Initialize the SQLDatabaseConnector object.
@@ -134,7 +134,7 @@ class SQLDatabaseConnector:
             raise
 
     def execute_query(
-            self, query: str, params: Optional[List[Union[str, int]]] = None
+        self, query: str, params: Optional[List[Union[str, int]]] = None
     ) -> Optional[pd.DataFrame]:
         """
         Executes a SQL query on the connected database and returns the results as a pandas DataFrame if the query is a SELECT statement.
@@ -154,26 +154,26 @@ class SQLDatabaseConnector:
         """
         try:
             logger.debug(f"Executing query: {query} with params: {params}")
-            cursor = self.connection.cursor()
-            cursor.execute(query, params)
+            with self.connection.cursor() as cursor:
+                cursor.execute(query, params)
 
-            if "SELECT" in query.upper():
-                data = cursor.fetchall()
-                columns = [desc[0] for desc in cursor.description]
-                dataframe = pd.DataFrame(data, columns=columns)
-                logger.info(
-                    f"Query executed successfully. Data retrieved: {len(dataframe)} rows."
-                )
-                return dataframe
-            else:
-                self.connection.commit()
-                if "INSERT" in query.upper():
-                    logger.info("Data inserted successfully.")
-                elif "UPDATE" in query.upper():
-                    logger.info("Data updated successfully.")
-                elif "DELETE" in query.upper():
-                    logger.info("Data deleted successfully.")
-                return None
+                if "SELECT" in query.upper():
+                    data = cursor.fetchall()
+                    columns = [desc[0] for desc in cursor.description]
+                    dataframe = pd.DataFrame(data, columns=columns)
+                    logger.info(
+                        f"Query executed successfully. Data retrieved: {len(dataframe)} rows."
+                    )
+                    return dataframe
+                else:
+                    self.connection.commit()
+                    if "INSERT" in query.upper():
+                        logger.info("Data inserted successfully.")
+                    elif "UPDATE" in query.upper():
+                        logger.info("Data updated successfully.")
+                    elif "DELETE" in query.upper():
+                        logger.info("Data deleted successfully.")
+                    return None
         except pymssql.ProgrammingError as e:
             logger.error(f"Failed to execute query: ProgrammingError - {e}")
             raise
