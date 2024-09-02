@@ -22,7 +22,9 @@ from typing import Optional
 from selenium.webdriver.chrome.options import Options
 
 
-def driver_settings(download_directory: Optional[str] = None, headless_mode: bool = False) -> Options:
+def driver_settings(
+    download_directory: Optional[str] = None, headless_mode: bool = False
+) -> Options:
     """
     Configure Chrome driver settings for automated web scraping.
 
@@ -38,26 +40,37 @@ def driver_settings(download_directory: Optional[str] = None, headless_mode: boo
         options.add_argument("--headless=new")  # Enables headless mode for the browser
     options.add_argument("--disable-gpu")  # Disable GPU for the browser
     options.add_argument("--disable-dev-shn-usage")  # Disable developer usage features
-    options.add_argument("--start-maximized")  # Start the browser in maximized fullscreen mode
     options.add_argument(
-        "--safebrowsing-disable-download-protection")  # Disable download protection provided by Safe Browsing
+        "--start-maximized"
+    )  # Start the browser in maximized fullscreen mode
+    options.add_argument(
+        "--safebrowsing-disable-download-protection"
+    )  # Disable download protection provided by Safe Browsing
     options.add_argument("--disable-extensions")  # Disables Chrome extensions.
     options.add_argument(
-        "--ignore-certificate-errors")  # Ignores SSL certificate errors, allowing Chrome to load pages with HTTPS errors.
-    options.add_argument('--ignore-ssl-errors')
-    options.add_argument("--disable-infobars")  # Disable the 'infobars' that pop up at the top of Chrome windows.
-    options.add_argument("--disable-browser-side-navigation")  # Disable browser side navigation
-    options.add_argument('--log-level=3')
+        "--ignore-certificate-errors"
+    )  # Ignores SSL certificate errors, allowing Chrome to load pages with HTTPS errors.
+    options.add_argument("--ignore-ssl-errors")
+    options.add_argument(
+        "--disable-infobars"
+    )  # Disable the 'infobars' that pop up at the top of Chrome windows.
+    options.add_argument(
+        "--disable-browser-side-navigation"
+    )  # Disable browser side navigation
+    options.add_argument("--log-level=3")
 
     if download_directory:
-        options.add_experimental_option("prefs", {
-            "download.default_directory": download_directory,
-            "download.prompt_for_download": False,
-            "download.directory_upgrade": True,
-            "safebrowsing.enabled": True,
-            "detach": True,
-            "plugins.always_open_pdf_externally": True,
-            "pdfjs.disabled": True
-        })
+        options.add_experimental_option(
+            "prefs",
+            {
+                "download.default_directory": download_directory,
+                "download.prompt_for_download": False,
+                "download.directory_upgrade": True,
+                "safebrowsing.enabled": True,
+                "detach": True,
+                "plugins.always_open_pdf_externally": True,
+                "pdfjs.disabled": True,
+            },
+        )
 
     return options

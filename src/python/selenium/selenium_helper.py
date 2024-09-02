@@ -43,7 +43,7 @@ class SeleniumHelper:
         self.driver = driver
 
     def type_into_element(
-            self, by: By, locator: str, text: str, timeout: int = DEFAULT_TIMEOUT
+        self, by: By, locator: str, text: str, timeout: int = DEFAULT_TIMEOUT
     ) -> None:
         """
         Type text into a visible element identified by a locator.
@@ -59,7 +59,7 @@ class SeleniumHelper:
         element.send_keys(text)
 
     def click_element(
-            self, by: By, locator: str, timeout: int = DEFAULT_TIMEOUT
+        self, by: By, locator: str, timeout: int = DEFAULT_TIMEOUT
     ) -> None:
         """
         Click a visible element identified by a locator.
@@ -74,7 +74,7 @@ class SeleniumHelper:
         element.click()
 
     def clear_element_text(
-            self, by: By, locator: str, timeout: int = DEFAULT_TIMEOUT
+        self, by: By, locator: str, timeout: int = DEFAULT_TIMEOUT
     ) -> None:
         """
         Clear the text of a visible element identified by a locator.
@@ -89,7 +89,7 @@ class SeleniumHelper:
         element.clear()
 
     def select_dropdown_option_by_value(
-            self, by: By, locator: str, option_value: str, timeout: int = DEFAULT_TIMEOUT
+        self, by: By, locator: str, option_value: str, timeout: int = DEFAULT_TIMEOUT
     ) -> None:
         """
         Select an option from a dropdown element by its value attribute.
@@ -124,7 +124,9 @@ class SeleniumHelper:
         self.driver.switch_to.frame(iframe)
 
     def is_element_present(
-            self, by: By, locator: str,
+        self,
+        by: By,
+        locator: str,
     ) -> bool:
         """
         Check if an element identified by a locator is present on the web page.
@@ -143,7 +145,7 @@ class SeleniumHelper:
             return False
 
     def get_element_text(
-            self, by: By, locator: str, timeout: int = DEFAULT_TIMEOUT
+        self, by: By, locator: str, timeout: int = DEFAULT_TIMEOUT
     ) -> str:
         """
         Retrieve the text content of a visible element identified by a locator.

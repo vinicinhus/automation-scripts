@@ -61,7 +61,9 @@ class EmailManager:
         self.password = password
         self.server = server
         self.port = port
-        logger.info(f"EmailManager initialized with sender: {sender}, server: {server}, port: {port}")
+        logger.info(
+            f"EmailManager initialized with sender: {sender}, server: {server}, port: {port}"
+        )
 
     def _check_filename(self, filename: str) -> bool:
         """
@@ -76,11 +78,21 @@ class EmailManager:
         Raises:
         - ValueError: If the filename contains special or accented characters.
         """
-        if re.search(r'[<>:"/\\|?*]|[áéíóúàèìòùâêîôûãõäëïöüçÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÄËÏÖÜÇ]', filename):
-            raise ValueError(f"Filename '{filename}' contains special or accented characters.")
+        if re.search(
+            r'[<>:"/\\|?*]|[áéíóúàèìòùâêîôûãõäëïöüçÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÄËÏÖÜÇ]', filename
+        ):
+            raise ValueError(
+                f"Filename '{filename}' contains special or accented characters."
+            )
         return True
 
-    def send_email(self, html_template: str, subject: str, email_receivers: List[str], file_paths: List[str] = None):
+    def send_email(
+        self,
+        html_template: str,
+        subject: str,
+        email_receivers: List[str],
+        file_paths: List[str] = None,
+    ):
         """
         Sends an email with an HTML template and optional attached files.
 
@@ -104,7 +116,9 @@ class EmailManager:
 
             message.attach(MIMEText(html_template, _subtype="html"))
 
-            logger.info(f"Preparing to send email to: {email_receivers} with subject: {subject}")
+            logger.info(
+                f"Preparing to send email to: {email_receivers} with subject: {subject}"
+            )
 
             if file_paths:
                 for file_path in file_paths:
@@ -114,7 +128,9 @@ class EmailManager:
                     self._check_filename(filename)
 
                     if not os.path.exists(normalized_file_path):
-                        raise FileNotFoundError(f"File not found: {normalized_file_path}")
+                        raise FileNotFoundError(
+                            f"File not found: {normalized_file_path}"
+                        )
 
                     with open(normalized_file_path, "rb") as file:
                         part = MIMEBase("application", "octet-stream")
@@ -141,7 +157,9 @@ class EmailManager:
 
         except FileNotFoundError as e:
             logger.error(f"File not found: {e.filename}")
-            raise FileNotFoundError(f"File not found. Please check the file path: {e.filename}")
+            raise FileNotFoundError(
+                f"File not found. Please check the file path: {e.filename}"
+            )
         except smtplib.SMTPException as e:
             logger.error(f"SMTPException occurred: {e}")
             raise smtplib.SMTPException(f"Error sending the e-mail: {e}")

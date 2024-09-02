@@ -6,7 +6,7 @@ from selenium.webdriver.common.by import By
 class RecaptchaV2EnterpriseProxylessExample:
     def __init__(self, anticaptcha_api_key: str) -> None:
         self.anticaptcha_api_key = anticaptcha_api_key
-        self.recaptcha_site_key = 'your-site-recaptcha-api-key'
+        self.recaptcha_site_key = "your-site-recaptcha-api-key"
         self.driver = webdriver.Chrome()
         self.solve_captcha()
 

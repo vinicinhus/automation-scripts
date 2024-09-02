@@ -182,7 +182,7 @@ class FileManager:
         return folder_path
 
     def wait_until_file_is_present(
-            self, folder_path: str, file_extension: str, timeout: int = 60
+        self, folder_path: str, file_extension: str, timeout: int = 60
     ):
         """
         Wait until a file with the specified extension is present in a folder.
