@@ -1,4 +1,4 @@
-from bot_configuration import Bot, DriverType
+from python.botcity.web.bot_configuration import Bot, DriverType
 
 
 def main():
