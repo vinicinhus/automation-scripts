@@ -27,6 +27,7 @@ Usage Example:
 """
 
 from enum import Enum
+from typing import Optional
 
 from botcity.web import WebBot, Browser, PageLoadStrategy
 from botcity.web.browsers.chrome import default_options as default_options_chrome
@@ -43,14 +44,14 @@ class DriverType(Enum):
 class Bot:
     def __init__(
         self,
-        anticaptcha_key: str,
+        anticaptcha_key: Optional[str],
         headless_mode: bool,
         driver: DriverType,
     ) -> None:
         """
         Initialize the Bot with anticaptcha credentials and browser configuration.
 
-        :param anticaptcha_key: The anti-captcha key for solving CAPTCHAs.
+        :param anticaptcha_key: The anti-captcha key for solving CAPTCHAs. Can be None or a string.
         :param headless_mode: Whether to run the browser in headless mode.
         :param driver: The browser driver to use (CHROME, FIREFOX, or EDGE).
         """
