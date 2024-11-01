@@ -1,5 +1,5 @@
 """
-Module: sql_database_connector
+Module: sql_server_pymssql
 
 This module provides the `SQLDatabaseConnector` class for connecting to and interacting with a Microsoft SQL Server database using PyMSSQL.
 
@@ -13,7 +13,7 @@ Classes:
     SQLDatabaseConnector: A class that handles connection to a SQL Server database and supports executing SQL queries.
 
 Usage Example:
-    >>> from sql_database_connector import SQLDatabaseConnector
+    >>> from sql_server_pymssql import SQLDatabaseConnector
 
     >>> # Initialize a SQLDatabaseConnector object
     >>> sql_connector = SQLDatabaseConnector(server='localhost', username='user', password='password', database='example_db')
