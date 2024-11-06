@@ -39,12 +39,14 @@ class Bitrix24API:
     def __init__(self, webhook_url: str) -> None:
         """
         Initializes the Bitrix24API instance with the provided webhook URL.
-        
+
         :param webhook_url: The base URL of the Bitrix24 webhook.
         """
         self.webhook_url = webhook_url
 
-    def send_post_request(self, method: str, params: Dict[str, Any]) -> requests.Response:
+    def send_post_request(
+        self, method: str, params: Dict[str, Any]
+    ) -> requests.Response:
         """
         Sends a POST request to the Bitrix24 API.
 
@@ -57,7 +59,9 @@ class Bitrix24API:
         response.raise_for_status()
         return response
 
-    def send_get_request(self, method: str, params: Dict[str, Any]) -> requests.Response:
+    def send_get_request(
+        self, method: str, params: Dict[str, Any]
+    ) -> requests.Response:
         """
         Sends a GET request to the Bitrix24 API.
 
