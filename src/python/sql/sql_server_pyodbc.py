@@ -182,3 +182,64 @@ class SQLDatabaseConnector:
         except pyodbc.Error as e:
             logger.error("Query execution failed.")
             raise RuntimeError("Query execution failed. Check logs for details.") from e
+
+    def execute_query_from_file(
+        self, file_path: str, params: Optional[List[Union[str, int]]] = None
+    ) -> Optional[pd.DataFrame]:
+        """
+        Executes a SQL query from a file and returns the results as a pandas DataFrame if the query is a SELECT statement.
+
+        Args:
+            file_path (str): The path to the SQL file containing the query.
+            params (Optional[List[Union[str, int]]]): The parameters to pass with the query. Defaults to None.
+
+        Returns:
+            Optional[pd.DataFrame]: A DataFrame containing the query results for SELECT statements, or None for other types of queries.
+
+        Raises:
+            FileNotFoundError: If the SQL file does not exist.
+            pyodbc.Error: If there is an error with the SQL query execution.
+        """
+        try:
+            logger.debug(f"Reading SQL query from file: {file_path}")
+            with open(file_path, "r") as file:
+                query = file.read()
+
+            logger.debug(
+                f"Executing query from file: {file_path} with parameters: {params}"
+            )
+
+            # Executar a query lida do arquivo e retornar um DataFrame se for um SELECT
+            with self.connection.cursor() as cursor:
+                cursor.execute(query, params or [])
+
+                if "SELECT" in query.upper():
+                    data = cursor.fetchall()
+                    columns = [desc[0] for desc in cursor.description]
+
+                    if data:
+                        data_as_lists = [list(row) for row in data]
+                        if len(data_as_lists[0]) == len(columns):
+                            dataframe = pd.DataFrame(data_as_lists, columns=columns)
+                            logger.info(
+                                f"Query from file executed successfully. Retrieved {len(dataframe)} rows."
+                            )
+                            return dataframe
+                        else:
+                            logger.error("Mismatch between data shape and columns.")
+                            raise ValueError(
+                                "Shape of passed values does not match the column names."
+                            )
+                else:
+                    self.connection.commit()
+                    logger.info("Query from file executed successfully.")
+                    return None
+
+        except FileNotFoundError as e:
+            logger.error(f"SQL file not found: {file_path}")
+            raise e
+        except pyodbc.Error as e:
+            logger.error("Query execution from file failed.")
+            raise RuntimeError(
+                "Query execution from file failed. Check logs for details."
+            ) from e
