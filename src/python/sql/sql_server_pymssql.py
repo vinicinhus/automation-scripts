@@ -82,20 +82,19 @@ class SQLDatabaseConnector:
             Exception: For any other unexpected errors.
         """
         try:
-            connection_params = (
-                {
+            if self.database:
+                connection_params = {
                     "server": self.server,
                     "user": self.username,
                     "password": self.password,
                     "database": self.database,
                 }
-                if self.database
-                else {
+            else:
+                connection_params = {
                     "server": self.server,
                     "user": self.username,
                     "password": self.password,
                 }
-            )
             self.connection = pymssql.connect(**connection_params)
             logger.info("Successfully connected to the SQL database.")
         except pymssql.InterfaceError as e:
