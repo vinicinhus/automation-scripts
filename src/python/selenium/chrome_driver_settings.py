@@ -1,69 +1,84 @@
 """
 Module: chrome_driver_settings.py
 
-This module provides a function to configure Chrome driver settings for automated web scraping.
-It sets up custom options for the Chrome driver to enhance automation capabilities and manage downloads effectively.
+This module provides a class to configure Chrome driver settings for automated web scraping.
+The ChromeDriverSettings class sets up custom options for the Chrome driver to enhance automation
+capabilities and manage downloads effectively. It also allows for automatic creation of the
+download directory if it doesn't already exist.
 
 Dependencies:
     - selenium.webdriver.chrome.options.Options: Options class from Selenium WebDriver for configuring Chrome driver settings.
+    - pathlib.Path: For handling the creation and path management of the download directory.
 
 Usage Example:
+    from chrome_driver_settings import ChromeDriverSettings
+
+    chrome_settings = ChromeDriverSettings(download_directory='downloads', headless_mode=True)
+    options = chrome_settings.get_options()
+
     from selenium import webdriver
-    from chrome_driver_settings import driver_settings
-    
-    driver = webdriver.Chrome()
-    
-    options = driver_settings(download_directory='/path/to/download/directory', headless_mode=True)
-    driver = webdriver.Chrome(chrome_options=options)
+    driver = webdriver.Chrome(options=options)
 """
 
 from typing import Optional
-
 from selenium.webdriver.chrome.options import Options
+from pathlib import Path
 
 
-def driver_settings(
-    download_directory: Optional[str] = None, headless_mode: bool = False
-) -> Options:
+class ChromeDriverSettings:
     """
-    Configure Chrome driver settings for automated web scraping.
+    A class to configure Chrome driver settings for automated web scraping.
 
-    Args:
-        download_directory (Optional[str]): The directory where downloaded files will be saved.
-        headless_mode (bool): If True, enables headless mode for the browser. Default is False.
-
-    Returns:
-        selenium.webdriver.chrome.options.Options: Chrome driver options with custom settings.
+    Attributes:
+        download_directory (Optional[str]): Directory for file downloads. Created in the project root if not provided.
+        headless_mode (bool): If True, enables headless mode for Chrome.
     """
-    options = Options()
-    if headless_mode:
-        options.add_argument("--headless=new")  # Enables headless mode for the browser
-    options.add_argument("--disable-gpu")  # Disable GPU for the browser
-    options.add_argument("--disable-dev-shn-usage")  # Disable developer usage features
-    options.add_argument(
-        "--start-maximized"
-    )  # Start the browser in maximized fullscreen mode
-    options.add_argument(
-        "--safebrowsing-disable-download-protection"
-    )  # Disable download protection provided by Safe Browsing
-    options.add_argument("--disable-extensions")  # Disables Chrome extensions.
-    options.add_argument(
-        "--ignore-certificate-errors"
-    )  # Ignores SSL certificate errors, allowing Chrome to load pages with HTTPS errors.
-    options.add_argument("--ignore-ssl-errors")
-    options.add_argument(
-        "--disable-infobars"
-    )  # Disable the 'infobars' that pop up at the top of Chrome windows.
-    options.add_argument(
-        "--disable-browser-side-navigation"
-    )  # Disable browser side navigation
-    options.add_argument("--log-level=3")
 
-    if download_directory:
+    def __init__(self, download_directory: Optional[str] = None, headless_mode: bool = False):
+        """
+        Initialize ChromeDriverSettings with specified download directory and headless mode.
+
+        Args:
+            download_directory (Optional[str]): The directory where downloaded files will be saved.
+                If None, 'downloads' directory will be created in the project root.
+            headless_mode (bool): If True, enables headless mode for the browser. Default is False.
+        """
+        self.download_directory = download_directory or "downloads"
+        self.headless_mode = headless_mode
+        self._create_download_directory()
+
+    def _create_download_directory(self) -> None:
+        """Create the download directory in the project root if it does not already exist."""
+        path = Path(self.download_directory)
+        if not path.is_absolute():
+            path = Path(__file__).parent / path  # Make path relative to project root
+        path.mkdir(parents=True, exist_ok=True)
+
+    def get_options(self) -> Options:
+        """
+        Get Chrome driver options with customized settings.
+
+        Returns:
+            Options: Configured Chrome driver options.
+        """
+        options = Options()
+        if self.headless_mode:
+            options.add_argument("--headless=new")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--disable-dev-shn-usage")
+        options.add_argument("--start-maximized")
+        options.add_argument("--safebrowsing-disable-download-protection")
+        options.add_argument("--disable-extensions")
+        options.add_argument("--ignore-certificate-errors")
+        options.add_argument("--ignore-ssl-errors")
+        options.add_argument("--disable-infobars")
+        options.add_argument("--disable-browser-side-navigation")
+        options.add_argument("--log-level=3")
+
         options.add_experimental_option(
             "prefs",
             {
-                "download.default_directory": download_directory,
+                "download.default_directory": str(Path(self.download_directory).resolve()),
                 "download.prompt_for_download": False,
                 "download.directory_upgrade": True,
                 "safebrowsing.enabled": True,
@@ -73,4 +88,8 @@ def driver_settings(
             },
         )
 
-    return options
+        return options
+
+
+if __name__ == "__main__":
+    
