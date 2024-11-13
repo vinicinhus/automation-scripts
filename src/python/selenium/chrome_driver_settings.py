@@ -51,7 +51,7 @@ class ChromeDriverSettings:
         """Create the download directory in the project root if it does not already exist."""
         path = Path(self.download_directory)
         if not path.is_absolute():
-            path = Path(__file__).parent / path  # Make path relative to project root
+            path = Path(__file__).parent.parent.parent / path  # Make path relative to project root
         path.mkdir(parents=True, exist_ok=True)
 
     def get_options(self) -> Options:
