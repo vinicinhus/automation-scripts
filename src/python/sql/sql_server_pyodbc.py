@@ -202,7 +202,7 @@ class SQLDatabaseConnector:
         """
         try:
             logger.debug(f"Reading SQL query from file: {file_path}")
-            with open(file_path, "r") as file:
+            with open(file_path, "r", encoding="utf-8") as file:
                 query = file.read()
 
             logger.debug(
