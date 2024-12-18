@@ -51,7 +51,7 @@ class ChromeDriverSettings:
         """Create the download directory in the project root if it does not already exist."""
         path = Path(self.download_directory)
         if not path.is_absolute():
-            path = Path(__file__) / path  # Make path relative to project root
+            path = Path(__file__).parent.parent.parent / path  # Faz o caminho ser relativo ao diretório do script
         path.mkdir(parents=True, exist_ok=True)
 
     def get_options(self) -> Options:
@@ -65,7 +65,7 @@ class ChromeDriverSettings:
         if self.headless_mode:
             options.add_argument("--headless=new")
         options.add_argument("--disable-gpu")
-        options.add_argument("--disable-dev-shn-usage")
+        options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--start-maximized")
         options.add_argument("--safebrowsing-disable-download-protection")
         options.add_argument("--disable-extensions")
@@ -89,4 +89,3 @@ class ChromeDriverSettings:
         )
 
         return options
-
