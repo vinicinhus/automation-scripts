@@ -7,7 +7,7 @@ from selenium_helper import SeleniumHelper
 
 def main():
     # Initialize ChromeDriver with custom settings
-    chrome_settings = ChromeDriverSettings(download_directory="downloads", headless_mode=True)
+    chrome_settings = ChromeDriverSettings(download_directory="downloads", headless_mode=True, incognito_mode=True)
     options = chrome_settings.get_options()
     print("ChromeDriver initialized with custom settings.")
 
@@ -22,6 +22,7 @@ def main():
 
         # Interact with elements on the page
         helper.click_element(By.ID, "start-button")
+        input()
         helper.type_into_element(By.NAME, "username", "test_user")
         helper.type_into_element(By.NAME, "password", "test_password")
         helper.click_element(By.XPATH, "//button[@type='submit']")
