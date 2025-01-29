@@ -117,7 +117,7 @@ class SQLDatabaseConnector:
             self.connection = pyodbc.connect(connection_string)
             logger.info("Successfully connected to the SQL database.")
         except pyodbc.Error as e:
-            logger.error("Failed to connect to the database.")
+            logger.exception("Failed to connect to the database.")
             raise RuntimeError(
                 "Database connection failed. Check logs for details."
             ) from e
@@ -134,7 +134,7 @@ class SQLDatabaseConnector:
                 self.connection.close()
                 logger.info("Successfully disconnected from the SQL database.")
         except pyodbc.Error as e:
-            logger.error("Failed to disconnect from the database.")
+            logger.exception("Failed to disconnect from the database.")
             raise RuntimeError("Failed to disconnect from the database.") from e
 
     def execute_query(
@@ -171,7 +171,7 @@ class SQLDatabaseConnector:
                             )
                             return dataframe
                         else:
-                            logger.error("Mismatch between data shape and columns.")
+                            logger.exception("Mismatch between data shape and columns.")
                             raise ValueError(
                                 "Shape of passed values does not match the column names."
                             )
@@ -180,7 +180,7 @@ class SQLDatabaseConnector:
                     logger.info("Query executed successfully.")
                     return None
         except pyodbc.Error as e:
-            logger.error("Query execution failed.")
+            logger.exception("Query execution failed.")
             raise RuntimeError("Query execution failed. Check logs for details.") from e
 
     def execute_query_from_file(
@@ -226,7 +226,7 @@ class SQLDatabaseConnector:
                             )
                             return dataframe
                         else:
-                            logger.error("Mismatch between data shape and columns.")
+                            logger.exception("Mismatch between data shape and columns.")
                             raise ValueError(
                                 "Shape of passed values does not match the column names."
                             )
@@ -236,10 +236,10 @@ class SQLDatabaseConnector:
                     return None
 
         except FileNotFoundError as e:
-            logger.error(f"SQL file not found: {file_path}")
+            logger.exception(f"SQL file not found: {file_path}")
             raise e
         except pyodbc.Error as e:
-            logger.error("Query execution from file failed.")
+            logger.exception("Query execution from file failed.")
             raise RuntimeError(
                 "Query execution from file failed. Check logs for details."
             ) from e

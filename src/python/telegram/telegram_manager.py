@@ -61,4 +61,4 @@ class TelegramManager:
             await self.bot.send_message(chat_id=self.chat_id, text=message)
             logger.info(f"Message sent: {message}")
         except TelegramError as e:
-            logger.error(f"Failed to send message: {e}")
+            logger.exception(f"Failed to send message: {e}")

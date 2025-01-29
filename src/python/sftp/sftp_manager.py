@@ -78,16 +78,16 @@ class SFTPManager:
             self.transport.connect(username=self.username, password=self.password)
             self.sftp = paramiko.SFTPClient.from_transport(self.transport)
         except paramiko.AuthenticationException as auth_error:
-            logger.error(f"Authentication failed: {auth_error}")
+            logger.exception(f"Authentication failed: {auth_error}")
             raise
         except paramiko.SSHException as ssh_error:
-            logger.error(f"SSH error occurred: {ssh_error}")
+            logger.exception(f"SSH error occurred: {ssh_error}")
             raise
         except socket.error as socket_error:
-            logger.error(f"Socket error occurred: {socket_error}")
+            logger.exception(f"Socket error occurred: {socket_error}")
             raise
         except Exception as e:
-            logger.error(
+            logger.exception(
                 f"An unexpected error occurred while trying to connect to the SFTP server: {e}"
             )
             raise
@@ -108,16 +108,16 @@ class SFTPManager:
             if self.transport:
                 self.transport.close()
         except AttributeError as attr_error:
-            logger.error(f"Attribute error occurred: {attr_error}")
+            logger.exception(f"Attribute error occurred: {attr_error}")
             raise
         except IOError as io_error:
-            logger.error(f"IO error occured: {io_error}")
+            logger.exception(f"IO error occured: {io_error}")
             raise
         except paramiko.SSHException as ssh_error:
-            logger.error(f"SSH error occurred: {ssh_error}")
+            logger.exception(f"SSH error occurred: {ssh_error}")
             raise
         except Exception as e:
-            logger.error(
+            logger.exception(
                 f"An unexpected error occurred while trying to disconnect from the SFTP server: {e}"
             )
 
@@ -137,17 +137,17 @@ class SFTPManager:
         try:
             self.sftp.put(local_path, remote_path)
         except paramiko.SSHException as ssh_error:
-            logger.error(
+            logger.exception(
                 f"SSH error occurred while uploading file '{local_path}' to '{remote_path}': {ssh_error}"
             )
             raise
         except paramiko.SFTPError as sftp_error:
-            logger.error(
+            logger.exception(
                 f"SFTP error occurred while uploading file '{local_path}' to '{remote_path}': {sftp_error}"
             )
             raise
         except OSError as os_error:
-            logger.error(
+            logger.exception(
                 f"OS error occurred while uploading file '{local_path}' to '{remote_path}': {os_error}"
             )
             raise
@@ -168,17 +168,17 @@ class SFTPManager:
             try:
                 self.sftp.put(local_path, remote_path)
             except paramiko.SSHException as ssh_error:
-                logger.error(
+                logger.exception(
                     f"SSH error occurred while uploading file '{local_path}' to '{remote_path}': {ssh_error}"
                 )
                 raise
             except paramiko.SFTPError as sftp_error:
-                logger.error(
+                logger.exception(
                     f"SFTP error occurred while uploading file '{local_path}' to '{remote_path}': {sftp_error}"
                 )
                 raise
             except OSError as os_error:
-                logger.error(
+                logger.exception(
                     f"OS error occurred while uploading file '{local_path}' to '{remote_path}': {os_error}"
                 )
                 raise
@@ -200,17 +200,17 @@ class SFTPManager:
         try:
             self.sftp.get(remote_path, local_path)
         except paramiko.SSHException as ssh_error:
-            logger.error(
+            logger.exception(
                 f"SSH error occurred while downloading file '{remote_path}' to '{local_path}': {ssh_error}"
             )
             raise
         except paramiko.SFTPError as sftp_error:
-            logger.error(
+            logger.exception(
                 f"SFTP error occurred while downloading file '{remote_path}' to '{local_path}': {sftp_error}"
             )
             raise
         except OSError as os_error:
-            logger.error(
+            logger.exception(
                 f"OS error occurred while downloading file '{remote_path}' to '{local_path}': {os_error}"
             )
             raise
@@ -231,17 +231,17 @@ class SFTPManager:
         try:
             self.sftp.put(source_path, destination_path)
         except paramiko.SSHException as ssh_error:
-            logger.error(
+            logger.exception(
                 f"SSH error occurred while copying file '{source_path}' to '{destination_path}': {ssh_error}"
             )
             raise
         except paramiko.SFTPError as sftp_error:
-            logger.error(
+            logger.exception(
                 f"SFTP error occurred while copying file '{source_path}' to '{destination_path}': {sftp_error}"
             )
             raise
         except OSError as os_error:
-            logger.error(
+            logger.exception(
                 f"OS error occurred while copying file '{source_path}' to '{destination_path}': {os_error}"
             )
             raise
@@ -262,17 +262,17 @@ class SFTPManager:
         try:
             self.sftp.rename(old_path, new_path)
         except paramiko.SSHException as ssh_error:
-            logger.error(
+            logger.exception(
                 f"SSH error occurred while renaming file '{old_path}' to '{new_path}': {ssh_error}"
             )
             raise
         except paramiko.SFTPError as sftp_error:
-            logger.error(
+            logger.exception(
                 f"SFTP error occurred while renaming file '{old_path}' to '{new_path}': {sftp_error}"
             )
             raise
         except OSError as os_error:
-            logger.error(
+            logger.exception(
                 f"OS error occurred while renaming file '{old_path}' to '{new_path}': {os_error}"
             )
             raise
@@ -298,17 +298,17 @@ class SFTPManager:
                 file.filename for file in files if not file.filename.startswith(".")
             ]
         except paramiko.SSHException as ssh_error:
-            logger.error(
+            logger.exception(
                 f"SSH error occurred while listing files in directory '{remote_directory}': {ssh_error}"
             )
             raise
         except paramiko.SFTPError as sftp_error:
-            logger.error(
+            logger.exception(
                 f"SFTP error occurred while listing files in directory '{remote_directory}': {sftp_error}"
             )
             raise
         except OSError as os_error:
-            logger.error(
+            logger.exception(
                 f"OS error occurred while listing files in directory '{remote_directory}': {os_error}"
             )
             raise
@@ -328,17 +328,17 @@ class SFTPManager:
         try:
             self.sftp.remove(file_path)
         except paramiko.SSHException as ssh_error:
-            logger.error(
+            logger.exception(
                 f"SSH error occurred while deleting file '{file_path}': {ssh_error}"
             )
             raise
         except paramiko.SFTPError as sftp_error:
-            logger.error(
+            logger.exception(
                 f"SFTP error occurred while deleting file '{file_path}': {sftp_error}"
             )
             raise
         except OSError as os_error:
-            logger.error(
+            logger.exception(
                 f"OS error occurred while deleting file '{file_path}': {os_error}"
             )
             raise

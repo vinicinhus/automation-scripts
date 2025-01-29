@@ -98,13 +98,13 @@ class SQLDatabaseConnector:
             self.connection = pymssql.connect(**connection_params)
             logger.info("Successfully connected to the SQL database.")
         except pymssql.InterfaceError as e:
-            logger.error(f"Failed to connect to database: InterfaceError - {e}")
+            logger.exception(f"Failed to connect to database: InterfaceError - {e}")
             raise
         except pymssql.DatabaseError as e:
-            logger.error(f"Failed to connect to database: DatabaseError - {e}")
+            logger.exception(f"Failed to connect to database: DatabaseError - {e}")
             raise
         except Exception as e:
-            logger.error(f"Unexpected error occurred while connecting to database: {e}")
+            logger.exception(f"Unexpected error occurred while connecting to database: {e}")
             raise
 
     def disconnect(self) -> None:
@@ -121,13 +121,13 @@ class SQLDatabaseConnector:
                 self.connection.close()
                 logger.info("Successfully disconnected from the SQL database.")
         except pymssql.DatabaseError as e:
-            logger.error(f"Failed to disconnect from database: DatabaseError - {e}")
+            logger.exception(f"Failed to disconnect from database: DatabaseError - {e}")
             raise
         except pymssql.InterfaceError as e:
-            logger.error(f"Failed to disconnect from database: InterfaceError - {e}")
+            logger.exception(f"Failed to disconnect from database: InterfaceError - {e}")
             raise
         except Exception as e:
-            logger.error(
+            logger.exception(
                 f"Unexpected error occurred while disconnecting from database: {e}"
             )
             raise
@@ -174,14 +174,14 @@ class SQLDatabaseConnector:
                         logger.info("Data deleted successfully.")
                     return None
         except pymssql.ProgrammingError as e:
-            logger.error(f"Failed to execute query: ProgrammingError - {e}")
+            logger.exception(f"Failed to execute query: ProgrammingError - {e}")
             raise
         except pymssql.DatabaseError as e:
-            logger.error(f"Failed to execute query: DatabaseError - {e}")
+            logger.exception(f"Failed to execute query: DatabaseError - {e}")
             raise
         except pymssql.InterfaceError as e:
-            logger.error(f"Failed to execute query: InterfaceError - {e}")
+            logger.exception(f"Failed to execute query: InterfaceError - {e}")
             raise
         except Exception as e:
-            logger.error(f"Unexpected error occurred while executing query: {e}")
+            logger.exception(f"Unexpected error occurred while executing query: {e}")
             raise

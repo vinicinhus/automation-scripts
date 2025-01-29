@@ -156,16 +156,16 @@ class EmailManager:
             logger.info(f"Email sent successfully to: {email_receivers}")
 
         except FileNotFoundError as e:
-            logger.error(f"File not found: {e.filename}")
+            logger.exception(f"File not found: {e.filename}")
             raise FileNotFoundError(
                 f"File not found. Please check the file path: {e.filename}"
             )
         except smtplib.SMTPException as e:
-            logger.error(f"SMTPException occurred: {e}")
+            logger.exception(f"SMTPException occurred: {e}")
             raise smtplib.SMTPException(f"Error sending the e-mail: {e}")
         except IOError as e:
-            logger.error(f"I/O error occurred: {e}")
+            logger.exception(f"I/O error occurred: {e}")
             raise IOError(f"I/O error while reading the file: {e}")
         except Exception as e:
-            logger.error(f"An unexpected error occurred: {e}")
+            logger.exception(f"An unexpected error occurred: {e}")
             raise Exception(f"An unexpected error occurred: {e}")
