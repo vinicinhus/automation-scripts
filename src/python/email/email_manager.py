@@ -91,6 +91,8 @@ class EmailManager:
         html_template: str,
         subject: str,
         email_receivers: List[str],
+        cc_email: List[str] = None,
+        bcc_email: List[str] = None,
         file_paths: List[str] = None,
     ):
         """
@@ -100,6 +102,8 @@ class EmailManager:
         - html_template (str): The HTML content of the email.
         - subject (str): The subject of the email.
         - email_receivers (list[str]): A list of email addresses of the recipients.
+        - cc_email (list[str], optional): A list of email addresses of the recipients to be added in the CC (carbon copy) field.
+        - bcc_email (list[str], optional): A list of email addresses of the recipients to be added in the BCC (blind carbon copy) field.
         - file_paths (list[str], optional): A list of paths to the files to be attached.
 
         Raises:
@@ -108,17 +112,29 @@ class EmailManager:
         - IOError: If there's an I/O error while reading any of the files.
         - Exception: For any other unexpected errors.
         """
+
+        # Ensure cc_email and bcc_email are always lists (default to empty lists if not provided)
+        cc_email = cc_email or []
+        bcc_email = bcc_email or []
+
         try:
             message = MIMEMultipart("alternative")
             message["From"] = self.sender
             message["To"] = ", ".join(email_receivers)
+            message["Cc"] = ", " .join(cc_email)
+            message["Bcc"] = ", " .join(bcc_email)
             message["Subject"] = subject
 
             message.attach(MIMEText(html_template, _subtype="html"))
 
-            logger.info(
-                f"Preparing to send email to: {email_receivers} with subject: {subject}"
-            )
+            if cc_email:
+                logger.info(
+                    f"Preparing to send email to: {email_receivers}, with cc: {cc_email} with subject: {subject}"
+                )
+            else:
+                logger.info(
+                    f"Preparing to send email to: {email_receivers} with subject: {subject}"
+                )
 
             if file_paths:
                 for file_path in file_paths:
@@ -152,8 +168,12 @@ class EmailManager:
                 smtp.starttls()
                 smtp.login(self.sender, self.password)
                 smtp.sendmail(self.sender, email_receivers, message.as_string())
+                smtp.sendmail(self.sender, (email_receivers+cc_email+bcc_email) , message.as_string())
 
-            logger.info(f"Email sent successfully to: {email_receivers}")
+            if cc_email:
+                logger.info(f"Email sent successfully to: {email_receivers} and cc: {cc_email}")
+            else:
+                logger.info(f"Email sent successfully to: {email_receivers}")
 
         except FileNotFoundError as e:
             logger.error(f"File not found: {e.filename}")
