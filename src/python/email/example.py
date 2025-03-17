@@ -29,6 +29,12 @@ def main():
     # Define the list of email recipients
     email_receivers = ["receiver1@example.com", "receiver2@example.com"]
 
+    # Define the list of email cc recipients
+    cc_receivers = ["receivercc1@example.com", "receivercc2@example.com"]
+    
+    # Define the list of email blind carbon copy recipients
+    bcc_receivers = ["receiverbcc1@example.com", "receiverbcc2@example.com"]
+
     # Optionally, define a list of file paths to attach to the email
     file_paths = ["/path/to/attachment1.txt", "/path/to/attachment2.pdf"]
 
@@ -38,6 +44,8 @@ def main():
             html_template=html_template,
             subject=subject,
             email_receivers=email_receivers,
+            cc_email=cc_receivers,
+            bcc_email=bcc_receivers,
             file_paths=file_paths,
         )
         print("Email sent successfully!")
