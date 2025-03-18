@@ -167,7 +167,6 @@ class EmailManager:
             with smtplib.SMTP(self.server, self.port) as smtp:
                 smtp.starttls()
                 smtp.login(self.sender, self.password)
-                smtp.sendmail(self.sender, email_receivers, message.as_string())
                 smtp.sendmail(self.sender, (email_receivers+cc_email+bcc_email) , message.as_string())
 
             if cc_email:
