@@ -29,7 +29,7 @@ Usage Example:
 from enum import Enum
 from typing import Optional
 
-from botcity.web import WebBot, Browser, PageLoadStrategy
+from botcity.web import Browser, PageLoadStrategy, WebBot
 from botcity.web.browsers.chrome import default_options as default_options_chrome
 from botcity.web.browsers.edge import default_options as default_options_edge
 from botcity.web.browsers.firefox import default_options as default_options_firefox

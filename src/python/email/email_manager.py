@@ -121,8 +121,8 @@ class EmailManager:
             message = MIMEMultipart("alternative")
             message["From"] = self.sender
             message["To"] = ", ".join(email_receivers)
-            message["Cc"] = ", " .join(cc_email)
-            message["Bcc"] = ", " .join(bcc_email)
+            message["Cc"] = ", ".join(cc_email)
+            message["Bcc"] = ", ".join(bcc_email)
             message["Subject"] = subject
 
             message.attach(MIMEText(html_template, _subtype="html"))
@@ -167,10 +167,16 @@ class EmailManager:
             with smtplib.SMTP(self.server, self.port) as smtp:
                 smtp.starttls()
                 smtp.login(self.sender, self.password)
-                smtp.sendmail(self.sender, (email_receivers+cc_email+bcc_email) , message.as_string())
+                smtp.sendmail(
+                    self.sender,
+                    (email_receivers + cc_email + bcc_email),
+                    message.as_string(),
+                )
 
             if cc_email:
-                logger.info(f"Email sent successfully to: {email_receivers} and cc: {cc_email}")
+                logger.info(
+                    f"Email sent successfully to: {email_receivers} and cc: {cc_email}"
+                )
             else:
                 logger.info(f"Email sent successfully to: {email_receivers}")
 

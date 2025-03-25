@@ -10,7 +10,7 @@ Dependencies:
 Usage Example::
     >>> from selenium import webdriver
     >>> from selenium_helper import SeleniumHelper
-    
+
     >>> driver = webdriver.Chrome()
     >>> helper = SeleniumHelper(driver)
     >>> helper.click_element(By.ID, "button_id")
@@ -20,7 +20,7 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
-from selenium.webdriver.support.ui import WebDriverWait, Select
+from selenium.webdriver.support.ui import Select, WebDriverWait
 
 DEFAULT_TIMEOUT: int = 10
 

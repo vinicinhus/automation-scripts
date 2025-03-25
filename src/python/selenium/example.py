@@ -1,13 +1,14 @@
+from chrome_driver_settings import ChromeDriverSettings
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-
-from chrome_driver_settings import ChromeDriverSettings
 from selenium_helper import SeleniumHelper
 
 
 def main():
     # Initialize ChromeDriver with custom settings
-    chrome_settings = ChromeDriverSettings(download_directory="downloads", headless_mode=True, incognito_mode=True)
+    chrome_settings = ChromeDriverSettings(
+        download_directory="downloads", headless_mode=True, incognito_mode=True
+    )
     options = chrome_settings.get_options()
     print("ChromeDriver initialized with custom settings.")
 

@@ -4,7 +4,7 @@ Module: chrome_driver_settings.py
 This module provides a class to configure Chrome driver settings for automated web scraping.
 The ChromeDriverSettings class sets up custom options for the Chrome driver to enhance automation
 capabilities and manage downloads effectively. It also allows for automatic creation of the
-download directory if it doesn't already exist. Additionally, it supports configuring the browser 
+download directory if it doesn't already exist. Additionally, it supports configuring the browser
 for headless mode and incognito mode.
 
 Dependencies:
@@ -21,9 +21,10 @@ Usage Example:
     driver = webdriver.Chrome(options=options)
 """
 
-from typing import Optional
-from selenium.webdriver.chrome.options import Options
 from pathlib import Path
+from typing import Optional
+
+from selenium.webdriver.chrome.options import Options
 
 
 class ChromeDriverSettings:
@@ -36,7 +37,12 @@ class ChromeDriverSettings:
         incognito_mode (bool): If True, launches the browser in incognito (private browsing) mode, preventing history or cookies from being stored.
     """
 
-    def __init__(self, download_directory: Optional[str] = None, headless_mode: bool = False, incognito_mode: bool = False):
+    def __init__(
+        self,
+        download_directory: Optional[str] = None,
+        headless_mode: bool = False,
+        incognito_mode: bool = False,
+    ):
         """
         Initialize ChromeDriverSettings with specified download directory, headless mode, and incognito mode.
 
@@ -55,14 +61,16 @@ class ChromeDriverSettings:
         """Create the download directory in the project root if it does not already exist."""
         path = Path(self.download_directory)
         if not path.is_absolute():
-            path = Path(__file__).parent.parent.parent / path  # Makes the path relative to the script directory
+            path = (
+                Path(__file__).parent.parent.parent / path
+            )  # Makes the path relative to the script directory
         path.mkdir(parents=True, exist_ok=True)
 
     def get_options(self) -> Options:
         """
         Get Chrome driver options with customized settings.
 
-        This method configures Chrome's behavior based on the provided settings, including enabling 
+        This method configures Chrome's behavior based on the provided settings, including enabling
         headless mode, incognito mode, and configuring the download directory and preferences.
 
         Returns:
@@ -87,7 +95,9 @@ class ChromeDriverSettings:
         options.add_experimental_option(
             "prefs",
             {
-                "download.default_directory": str(Path(self.download_directory).resolve()),
+                "download.default_directory": str(
+                    Path(self.download_directory).resolve()
+                ),
                 "download.prompt_for_download": False,
                 "download.directory_upgrade": True,
                 "safebrowsing.enabled": True,

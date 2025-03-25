@@ -20,7 +20,7 @@ Usage Example:
     log_config = LoggerConfig(env="development", general_log_file="logs/app.log", error_log_file="logs/error.log")
     logger.info("This is an info message.")
     logger.error("This is an error message.")
-    
+
     # Simulating uncaught exception logging
     raise Exception("This will be logged as an uncaught exception.")
 """

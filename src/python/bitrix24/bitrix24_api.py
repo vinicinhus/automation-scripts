@@ -26,7 +26,7 @@ Usage Example:
     >>> # Both responses will be of type requests.Response
 """
 
-from typing import Dict, Any
+from typing import Any, Dict
 
 import requests
 

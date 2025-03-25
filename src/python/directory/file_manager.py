@@ -28,7 +28,7 @@ Usage Example:
     >>> # Move multiple files to different locations using a mapping dictionary
     >>> path_mapping = {"file1.txt": "destination_folder1", "file2.txt": "destination_folder2"}
     >>> file_manager.move_files(path_mapping)
-    
+
     >>> # Move all files from one folder to a destination folder
     >>> file_manager.move_all_files("source_folder", "destination_folder")
 
@@ -37,16 +37,16 @@ Usage Example:
 
     >>> # Exclude (delete) all files in a folder
     >>> file_manager.exclude_all_files("folder_to_clear")
-    
+
     >>> # Clear all files from a directory tree
     >>> file_manager.clear_directory_tree("directory_to_clear")
 
     >>> # Create a new folder if it does not already exist
     >>> created_folder_path = file_manager.create_folder("new_folder")
-    
+
     >>> # Wait until a file with the specified extension is present in a folder
     >>> file_manager.wait_until_file_is_present("folder_path", "file_extension", timeout=60)
-    
+
     >>> # Check if a file with the extension .txt exists in a folder
     >>> has_pdf_in_folder = file_manager.has_file_with_extension("/path/to/folder", ".txt")
     >>> if has_pdf_in_folder:

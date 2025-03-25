@@ -31,7 +31,7 @@ def main():
 
     # Define the list of email cc recipients
     cc_receivers = ["receivercc1@example.com", "receivercc2@example.com"]
-    
+
     # Define the list of email blind carbon copy recipients
     bcc_receivers = ["receiverbcc1@example.com", "receiverbcc2@example.com"]
 
