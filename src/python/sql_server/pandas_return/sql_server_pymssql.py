@@ -104,7 +104,9 @@ class SQLDatabaseConnector:
             logger.exception(f"Failed to connect to database: DatabaseError - {e}")
             raise
         except Exception as e:
-            logger.exception(f"Unexpected error occurred while connecting to database: {e}")
+            logger.exception(
+                f"Unexpected error occurred while connecting to database: {e}"
+            )
             raise
 
     def disconnect(self) -> None:
@@ -124,7 +126,9 @@ class SQLDatabaseConnector:
             logger.exception(f"Failed to disconnect from database: DatabaseError - {e}")
             raise
         except pymssql.InterfaceError as e:
-            logger.exception(f"Failed to disconnect from database: InterfaceError - {e}")
+            logger.exception(
+                f"Failed to disconnect from database: InterfaceError - {e}"
+            )
             raise
         except Exception as e:
             logger.exception(
