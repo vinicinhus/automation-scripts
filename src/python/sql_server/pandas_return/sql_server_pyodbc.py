@@ -93,7 +93,6 @@ class SQLDatabaseConnector:
         """
         try:
             if self.use_windows_auth:
-                # Connection string using Windows Authentication
                 connection_string = (
                     f"DRIVER={{ODBC Driver 17 for SQL Server}};"
                     f"SERVER={self.server};"
@@ -105,7 +104,6 @@ class SQLDatabaseConnector:
                     raise ValueError(
                         "Username and password are required for SQL Server Authentication."
                     )
-                # Connection string for SQL Server Authentication
                 connection_string = (
                     f"DRIVER={{ODBC Driver 17 for SQL Server}};"
                     f"SERVER={self.server};"
@@ -155,6 +153,10 @@ class SQLDatabaseConnector:
         """
         try:
             logger.debug(f"Executing query: {query} with parameters: {params}")
+            if self.connection is None:
+                raise RuntimeError(
+                    "Database connection is not established. Call connect() first."
+                )
             with self.connection.cursor() as cursor:
                 cursor.execute(query, params or [])
 
@@ -209,7 +211,10 @@ class SQLDatabaseConnector:
                 f"Executing query from file: {file_path} with parameters: {params}"
             )
 
-            # Executar a query lida do arquivo e retornar um DataFrame se for um SELECT
+            if self.connection is None:
+                raise RuntimeError(
+                    "Database connection is not established. Call connect() first."
+                )
             with self.connection.cursor() as cursor:
                 cursor.execute(query, params or [])
 
