@@ -21,6 +21,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select, WebDriverWait
+from typing import Literal
 
 DEFAULT_TIMEOUT: int = 10
 
@@ -164,3 +165,33 @@ class SeleniumHelper:
             return element.text
         except NoSuchElementException:
             return ""
+        
+    def handle_alert(self, action: Literal["a", "d"] = "a", timeout: int = DEFAULT_TIMEOUT) -> None:
+        """
+        Handle browser alerts (JavaScript pop-ups) by accepting or dismissing them.
+
+        This function waits for a browser alert to be present within the given timeout period.
+        Once detected, it performs the specified action — either accepting ('a') or dismissing ('d') the alert.
+
+        Args:
+            action (str): Action to perform on the alert.
+                          Use 'a' for accept (default) or 'd' for dismiss.
+            timeout (int): Maximum time to wait for the alert in seconds. Defaults to 10 seconds.
+
+        Raises:
+            TimeoutException: If the alert does not appear within the specified timeout.
+            UnexpectedAlertPresentException: If an unexpected alert is already open.
+            ValueError: If the action value is not 'a' or 'd'.
+        """
+        try:
+            wait = WebDriverWait(self.driver, timeout)
+            alert = wait.until(lambda d: d.switch_to.alert)
+
+            if action.lower() == "a":
+                alert.accept()
+            elif action.lower() == "d":
+                alert.dismiss()
+            else:
+                raise ValueError("Invalid action. Use 'a' for accept or 'd' for dismiss.")
+        except Exception as e:
+            print(f"Error handling alert: {e}")

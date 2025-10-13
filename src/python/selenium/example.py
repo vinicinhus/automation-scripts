@@ -23,7 +23,6 @@ def main():
 
         # Interact with elements on the page
         helper.click_element(By.ID, "start-button")
-        input()
         helper.type_into_element(By.NAME, "username", "test_user")
         helper.type_into_element(By.NAME, "password", "test_password")
         helper.click_element(By.XPATH, "//button[@type='submit']")
@@ -41,6 +40,10 @@ def main():
         # Switch to an iframe and interact with elements inside it
         helper.switch_to_iframe(By.TAG_NAME, "iframe")
         helper.click_element(By.XPATH, "//button[@class='inside-iframe-button']")
+
+        # Handle a JavaScript alert (accept or dismiss)
+        # Use 'a' for accept (default) or 'd' for dismiss
+        helper.handle_alert(action="a")
 
     finally:
         # Close the browser
