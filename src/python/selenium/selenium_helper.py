@@ -16,12 +16,13 @@ Usage Example::
     >>> helper.click_element(By.ID, "button_id")
 """
 
+from typing import Literal, Union
+
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select, WebDriverWait
-from typing import Literal, Union
 
 
 class SeleniumHelper:
@@ -31,6 +32,7 @@ class SeleniumHelper:
     Args:
         driver (webdriver.Chrome): An instance of Selenium WebDriver.
     """
+
     DEFAULT_TIMEOUT: int = 10
 
     def __init__(self, driver: webdriver.Chrome) -> None:
@@ -57,7 +59,11 @@ class SeleniumHelper:
         return (str(by), locator)
 
     def type_into_element(
-        self, by: Union[By, str], locator: str, text: str, timeout: int = DEFAULT_TIMEOUT
+        self,
+        by: Union[By, str],
+        locator: str,
+        text: str,
+        timeout: int = DEFAULT_TIMEOUT,
     ) -> None:
         """
         Type text into a visible element identified by a locator.
@@ -69,7 +75,9 @@ class SeleniumHelper:
             timeout (int): Maximum time to wait for the element in seconds. Defaults to 10 seconds.
         """
         wait = WebDriverWait(self.driver, timeout)
-        element = wait.until(ec.visibility_of_element_located(self._locator(by, locator)))
+        element = wait.until(
+            ec.visibility_of_element_located(self._locator(by, locator))
+        )
         element.send_keys(text)
 
     def click_element(
@@ -99,11 +107,17 @@ class SeleniumHelper:
             timeout (int): Maximum time to wait for the element in seconds. Defaults to 10 seconds.
         """
         wait = WebDriverWait(self.driver, timeout)
-        element = wait.until(ec.visibility_of_element_located(self._locator(by, locator)))
+        element = wait.until(
+            ec.visibility_of_element_located(self._locator(by, locator))
+        )
         element.clear()
 
     def select_dropdown_option_by_value(
-        self, by: Union[By, str], locator: str, option_value: str, timeout: int = DEFAULT_TIMEOUT
+        self,
+        by: Union[By, str],
+        locator: str,
+        option_value: str,
+        timeout: int = DEFAULT_TIMEOUT,
     ) -> None:
         """
         Select an option from a dropdown element by its value attribute.
@@ -174,12 +188,16 @@ class SeleniumHelper:
         """
         try:
             wait = WebDriverWait(self.driver, timeout)
-            element = wait.until(ec.visibility_of_element_located(self._locator(by, locator)))
+            element = wait.until(
+                ec.visibility_of_element_located(self._locator(by, locator))
+            )
             return element.text
         except NoSuchElementException:
             return ""
-        
-    def handle_alert(self, action: Literal["a", "d"] = "a", timeout: int = DEFAULT_TIMEOUT) -> None:
+
+    def handle_alert(
+        self, action: Literal["a", "d"] = "a", timeout: int = DEFAULT_TIMEOUT
+    ) -> None:
         """
         Handle browser alerts (JavaScript pop-ups) by accepting or dismissing them.
 
