@@ -97,9 +97,9 @@ class FileManager:
             file_path: The name of the file to be moved.
             destination: The destination folder path where the file will be moved.
         """
-        file_path: Path = self.base_path / file_path
+        src_path: Path = self.base_path / file_path
         destination_path: Path = self.base_path / destination
-        file_path.rename(destination_path / file_path.name)
+        src_path.rename(destination_path / src_path.name)
 
     def move_files(self, path_mapping: Dict[str, str]) -> None:
         """
@@ -134,8 +134,8 @@ class FileManager:
         Args:
             file_path: The name of the file to be excluded (deleted).
         """
-        file_path: Path = self.base_path / file_path
-        file_path.unlink()
+        target_path: Path = self.base_path / file_path
+        target_path.unlink()
 
     def exclude_all_files(self, folder_path: str) -> None:
         """
@@ -144,8 +144,8 @@ class FileManager:
         Args:
             folder_path: The name of the folder containing files to be excluded (deleted).
         """
-        folder_path: Path = self.base_path / folder_path
-        for file_path in folder_path.iterdir():
+        target_folder: Path = self.base_path / folder_path
+        for file_path in target_folder.iterdir():
             file_path.unlink()
 
     def clear_directory_tree(self, directory_path: str) -> None:
@@ -155,8 +155,8 @@ class FileManager:
         Args:
             directory_path: The path of the directory tree to be cleared.
         """
-        directory_path: Path = self.base_path / directory_path
-        for path in directory_path.rglob("*"):
+        target_directory: Path = self.base_path / directory_path
+        for path in target_directory.rglob("*"):
             if path.is_file():
                 path.unlink()
 
@@ -176,10 +176,10 @@ class FileManager:
             current_date = datetime.now().strftime("%Y-%m-%d")
             folder_path = folder_path.replace("{time:YYYY-MM-DD}", current_date)
 
-        folder_path: Path = self.base_path / folder_path
-        if not folder_path.exists():
-            folder_path.mkdir()
-        return folder_path
+        folder_path_obj: Path = self.base_path / folder_path
+        if not folder_path_obj.exists():
+            folder_path_obj.mkdir()
+        return folder_path_obj
 
     def wait_until_file_is_present(
         self, folder_path: str, file_extension: str, timeout: int = 60
@@ -193,10 +193,10 @@ class FileManager:
             timeout: The maximum time (in seconds) to wait for the file before raising a TimeoutError.
         """
         start_time = time.time()
-        folder_path: Path = self.base_path / folder_path
+        folder_path_obj: Path = self.base_path / folder_path
 
         while True:
-            files = [f for f in folder_path.glob(f"*.{file_extension.lower()}")]
+            files = [f for f in folder_path_obj.glob(f"*.{file_extension.lower()}")]
 
             if files:
                 break
@@ -220,12 +220,12 @@ class FileManager:
         Returns:
             bool: True if a file with the extension exists, False otherwise.
         """
-        folder_path: Path = self.base_path / folder_path
+        folder_path_obj: Path = self.base_path / folder_path
 
-        if not folder_path.is_dir():
-            raise ValueError(f"{folder_path} is not a valid directory")
+        if not folder_path_obj.is_dir():
+            raise ValueError(f"{folder_path_obj} is not a valid directory")
 
-        for file in folder_path.iterdir():
+        for file in folder_path_obj.iterdir():
             if file.is_file() and file.suffix.lower() == extension.lower():
                 return True
 
