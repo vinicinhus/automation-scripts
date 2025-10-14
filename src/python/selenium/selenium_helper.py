@@ -21,9 +21,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select, WebDriverWait
-from typing import Literal
-
-DEFAULT_TIMEOUT: int = 10
+from typing import Literal, Union
 
 
 class SeleniumHelper:
@@ -33,6 +31,7 @@ class SeleniumHelper:
     Args:
         driver (webdriver.Chrome): An instance of Selenium WebDriver.
     """
+    DEFAULT_TIMEOUT: int = 10
 
     def __init__(self, driver: webdriver.Chrome) -> None:
         """
@@ -43,8 +42,22 @@ class SeleniumHelper:
         """
         self.driver = driver
 
+    def _locator(self, by: Union[By, str], locator: str) -> tuple[str, str]:
+        """
+        Internal helper to normalize locator typing for Selenium expected_conditions.
+        Ensures compatibility between By enums and plain strings.
+
+        Args:
+            by (Union[By, str]): The Selenium locator type (e.g., By.ID, "id").
+            locator (str): The locator value.
+
+        Returns:
+            tuple[str, str]: A properly typed locator tuple for Selenium conditions.
+        """
+        return (str(by), locator)
+
     def type_into_element(
-        self, by: By, locator: str, text: str, timeout: int = DEFAULT_TIMEOUT
+        self, by: Union[By, str], locator: str, text: str, timeout: int = DEFAULT_TIMEOUT
     ) -> None:
         """
         Type text into a visible element identified by a locator.
@@ -56,11 +69,11 @@ class SeleniumHelper:
             timeout (int): Maximum time to wait for the element in seconds. Defaults to 10 seconds.
         """
         wait = WebDriverWait(self.driver, timeout)
-        element = wait.until(ec.visibility_of_element_located((by, locator)))
+        element = wait.until(ec.visibility_of_element_located(self._locator(by, locator)))
         element.send_keys(text)
 
     def click_element(
-        self, by: By, locator: str, timeout: int = DEFAULT_TIMEOUT
+        self, by: Union[By, str], locator: str, timeout: int = DEFAULT_TIMEOUT
     ) -> None:
         """
         Click a visible element identified by a locator.
@@ -71,11 +84,11 @@ class SeleniumHelper:
             timeout (int): Maximum time to wait for the element to be clickable in seconds. Defaults to 10 seconds.
         """
         wait = WebDriverWait(self.driver, timeout)
-        element = wait.until(ec.element_to_be_clickable((by, locator)))
+        element = wait.until(ec.element_to_be_clickable(self._locator(by, locator)))
         element.click()
 
     def clear_element_text(
-        self, by: By, locator: str, timeout: int = DEFAULT_TIMEOUT
+        self, by: Union[By, str], locator: str, timeout: int = DEFAULT_TIMEOUT
     ) -> None:
         """
         Clear the text of a visible element identified by a locator.
@@ -86,11 +99,11 @@ class SeleniumHelper:
             timeout (int): Maximum time to wait for the element in seconds. Defaults to 10 seconds.
         """
         wait = WebDriverWait(self.driver, timeout)
-        element = wait.until(ec.visibility_of_element_located((by, locator)))
+        element = wait.until(ec.visibility_of_element_located(self._locator(by, locator)))
         element.clear()
 
     def select_dropdown_option_by_value(
-        self, by: By, locator: str, option_value: str, timeout: int = DEFAULT_TIMEOUT
+        self, by: Union[By, str], locator: str, option_value: str, timeout: int = DEFAULT_TIMEOUT
     ) -> None:
         """
         Select an option from a dropdown element by its value attribute.
@@ -102,11 +115,11 @@ class SeleniumHelper:
             timeout (int): Maximum time to wait for the element in seconds. Defaults to 10 seconds.
         """
         wait = WebDriverWait(self.driver, timeout)
-        element = wait.until(ec.presence_of_element_located((by, locator)))
+        element = wait.until(ec.presence_of_element_located(self._locator(by, locator)))
         select = Select(element)
         select.select_by_value(option_value)
 
-    def switch_to_iframe(self, by: By, locator: str) -> None:
+    def switch_to_iframe(self, by: Union[By, str], locator: str) -> None:
         """
         Switch to an iframe identified by a locator.
 
@@ -121,12 +134,12 @@ class SeleniumHelper:
             None
         """
         wait = WebDriverWait(self.driver, 30)
-        iframe = wait.until(ec.presence_of_element_located((by, locator)))
+        iframe = wait.until(ec.presence_of_element_located(self._locator(by, locator)))
         self.driver.switch_to.frame(iframe)
 
     def is_element_present(
         self,
-        by: By,
+        by: Union[By, str],
         locator: str,
     ) -> bool:
         """
@@ -140,13 +153,13 @@ class SeleniumHelper:
             bool: True if the element is present, False otherwise.
         """
         try:
-            self.driver.find_element(by, locator)
+            self.driver.find_element(str(by), locator)
             return True
         except NoSuchElementException:
             return False
 
     def get_element_text(
-        self, by: By, locator: str, timeout: int = DEFAULT_TIMEOUT
+        self, by: Union[By, str], locator: str, timeout: int = DEFAULT_TIMEOUT
     ) -> str:
         """
         Retrieve the text content of a visible element identified by a locator.
@@ -161,7 +174,7 @@ class SeleniumHelper:
         """
         try:
             wait = WebDriverWait(self.driver, timeout)
-            element = wait.until(ec.visibility_of_element_located((by, locator)))
+            element = wait.until(ec.visibility_of_element_located(self._locator(by, locator)))
             return element.text
         except NoSuchElementException:
             return ""
@@ -183,15 +196,12 @@ class SeleniumHelper:
             UnexpectedAlertPresentException: If an unexpected alert is already open.
             ValueError: If the action value is not 'a' or 'd'.
         """
-        try:
-            wait = WebDriverWait(self.driver, timeout)
-            alert = wait.until(lambda d: d.switch_to.alert)
+        wait = WebDriverWait(self.driver, timeout)
+        alert = wait.until(lambda d: d.switch_to.alert)
 
-            if action.lower() == "a":
-                alert.accept()
-            elif action.lower() == "d":
-                alert.dismiss()
-            else:
-                raise ValueError("Invalid action. Use 'a' for accept or 'd' for dismiss.")
-        except Exception as e:
-            print(f"Error handling alert: {e}")
+        if action.lower() == "a":
+            alert.accept()
+        elif action.lower() == "d":
+            alert.dismiss()
+        else:
+            raise ValueError("Invalid action. Use 'a' for accept or 'd' for dismiss.")
