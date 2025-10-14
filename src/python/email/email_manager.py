@@ -25,7 +25,7 @@ from email.header import Header
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from typing import List
+from typing import List, Optional
 
 from loguru import logger
 
@@ -91,9 +91,9 @@ class EmailManager:
         html_template: str,
         subject: str,
         email_receivers: List[str],
-        cc_email: List[str] = None,
-        bcc_email: List[str] = None,
-        file_paths: List[str] = None,
+        cc_email: Optional[List[str]] = None,
+        bcc_email: Optional[List[str]] = None,
+        file_paths: Optional[List[str]] = None,
     ):
         """
         Sends an email with an HTML template and optional attached files.
