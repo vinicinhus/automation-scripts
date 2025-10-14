@@ -135,6 +135,8 @@ class SFTPManager:
         - OSError: If an OS-related error occurs.
         """
         try:
+            if self.sftp is None:
+                raise RuntimeError("SFTP connection is not established.")
             self.sftp.put(local_path, remote_path)
         except paramiko.SSHException as ssh_error:
             logger.exception(
@@ -166,6 +168,8 @@ class SFTPManager:
         """
         for local_path, remote_path in file_mapping.items():
             try:
+                if self.sftp is None:
+                    raise RuntimeError("SFTP connection is not established.")
                 self.sftp.put(local_path, remote_path)
             except paramiko.SSHException as ssh_error:
                 logger.exception(
@@ -198,6 +202,8 @@ class SFTPManager:
         - OSError: If an OS-related error occurs.
         """
         try:
+            if self.sftp is None:
+                    raise RuntimeError("SFTP connection is not established.")
             self.sftp.get(remote_path, local_path)
         except paramiko.SSHException as ssh_error:
             logger.exception(
@@ -229,6 +235,8 @@ class SFTPManager:
         - OSError: If an OS-related error occurs.
         """
         try:
+            if self.sftp is None:
+                raise RuntimeError("SFTP connection is not established.")
             self.sftp.put(source_path, destination_path)
         except paramiko.SSHException as ssh_error:
             logger.exception(
@@ -260,6 +268,8 @@ class SFTPManager:
         - OSError: If an OS-related error occurs.
         """
         try:
+            if self.sftp is None:
+                    raise RuntimeError("SFTP connection is not established.")
             self.sftp.rename(old_path, new_path)
         except paramiko.SSHException as ssh_error:
             logger.exception(
@@ -293,6 +303,8 @@ class SFTPManager:
         - OSError: If an OS-related error occurs.
         """
         try:
+            if self.sftp is None:
+                    raise RuntimeError("SFTP connection is not established.")
             files = self.sftp.listdir_attr(remote_directory)
             return [
                 file.filename for file in files if not file.filename.startswith(".")
@@ -326,6 +338,8 @@ class SFTPManager:
         - OSError: If an OS-related error occurs.
         """
         try:
+            if self.sftp is None:
+                    raise RuntimeError("SFTP connection is not established.")
             self.sftp.remove(file_path)
         except paramiko.SSHException as ssh_error:
             logger.exception(
